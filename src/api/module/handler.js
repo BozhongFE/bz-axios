@@ -37,9 +37,9 @@ export default class Handler {
   }
   // 请求成功后处理接口数据
   static res(data, successCB, errorCB, completeCB, requestComplete) {
-    if (debug) {
+    if (this.debug) {
       console.log(data);
-      debug = false;
+      this.debug = false;
     }
     if (data.error_code === 0) {
       if (successCB) successCB(data);
@@ -55,7 +55,7 @@ export default class Handler {
   static defaultError(err, type = 'networkError') {
     if (type === 'data') return console.log(`格式异常：${err}`);
     return console.error(err);
-  },
+  }
   // 网络异常处理
   static networkError(networkErrorCB, requestCompleteCB) {
     if (this.debug && (networkErrorCB || requestCompleteCB)) {

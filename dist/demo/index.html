@@ -124,7 +124,8 @@
       /* 为避免命名冲突，内部方法皆为静态方法，若要修改，请通过类修改。
       * 具体有哪些方法请扒源码。
       * 如网络异常报错源码：
-      * static defaultError(err = 'error') {
+      * static defaultError(err, type = 'networkError') {
+      *   if (type === 'data') return console.log('格式异常' + err);
       *   return console.error(err);
       * }
       */</span>
@@ -152,23 +153,35 @@
           console.log(data);
           alert('用户信息获取成功');
         },
-        error: function(err) {
+        networkError: function(err) {
           console.log(err);
-          alert('用户信息获取失败');
+          alert(err);
         }
       })
       </code>
       <a class="btn-box__a" href="javascript:" data-code="demo2">修改报错形式</a>
       <code class="btn-box__code" id="demo2">
-        <span class="tips">// res请求成功后的处理器，
-        // 这样修改success/error/complete失效</span>
+        <span class="tips">// res请求成功后的处理器，networkError网络异常处理器
+        // 这样修改除progress其他回调都失效</span>
 
         BzAxios.res = function(data) {
           console.log(data)
         }
-        api.personal({
+        BzAxios.networkError = function() {
+          return function(err) {
+            console.log('出错了');
+          }
+        }
+
+        api.personal({ 
+          <span class="tips">// 已无效</span>
           success: function(data) {
-            alert('lalala~'); <span class="tips">// 已无效</span>
+            alert('lalala~');
+          },
+          <span class="tips">// 已无效</span>
+          networkError: function(err) {
+            console.log(err);
+            alert(err);
           }
         })
       </code>
