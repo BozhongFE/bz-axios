@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>demo</title>
+  <style lang="less">
+    body {
+      max-width: 750px;
+      margin: 0 auto;
+      padding-top: 20px;
+      font-size: 14px;
+    }
+    pre {
+      overflow-x: auto;
+      word-wrap: normal;
+      margin-left: 0;
+      box-sizing: border-box;
+    }
+    pre::-webkit-scrollbar {
+      display: none;
+    }
+    pre, code {
+      font-family: 'Source Code Pro', Consolas, 'Liberation Mono', Courier, 'PT Mono', "PingFang SC", "Microsoft YaHei", monospace, serif;
+    }
+    .code-box {
+      margin: 0 5px;
+      margin-bottom: 20px;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 13px;
+      box-sizing: border-box;
+    }
+    .btn-box {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .btn-box__a {
+      flex: 1;
+      background-color: #ff8bac;
+      width: 96%;
+      height: 40px;
+      line-height: 38px;
+      margin: 0 5px;
+      color: #fff;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn-box__code {
+      display: none;
+    }
+    .tips {
+      color: #999 !important;
+    }
+  </style>  
+</head>
+<body>
+  <div id="app">
+    <pre class="code-box"><code>
+      <span class="tips">//------ npm安装 -------</span>
+      npm install https://github.com/BozhongFE/bz-app-plugins#v<%=htmlWebpackPlugin.options.version%>
+
+      import BzAxios from 'bz-axios';
+      ...
+      <!-- <span class="tips">//------ requirejs引入 -------</span>
+      require(['mod/bz-axios/<%=htmlWebpackPlugin.options.version%>'], function(BzAxios) {
+        ...
+      } -->
+
+      <span class="tips">//------ 具体使用 -------
+
+      // 1.生成实例
+
+      /* 
+      * new BzAxios(config, withCredentials = true, debug = false)
+      * config-接口请求方法的配置，可多层嵌套
+      * withCredentials-是否跨域, 默认true
+      * debug-开启debug, 默认false
+      */</span>
+
+      var api = new BzAxios({
+        <span class="tips">// 带有url字段则判断为方法, 通过api.personal(...args)调用</span>
+        personal: {
+          type: 'GET', <span class="tips">// get可不填，上传填'form'</span>
+          url: 'http://account.office.bzdev.net/restful/personal.json',
+        },
+        <span class="tips">// 字符串判断为get方法, 通过api.detail(...args)调用</span>
+        detail: 'http://huodong.office.bzdev.net/restful/yunji/product/goods/detail.json?id=2',
+        app: {
+          <span class="tips">// 模块内方法，通过api.app.methodName(...args)调用</span>
+          methodName: {
+            type: 'post',
+            url: 'http://api.office.bzdev.net/yunji/restful/pedometer/list.json',
+          },
+        },
+      })
+
+      <span class="tips">// 2.调用
+      
+      /*
+      * api.moduleName.fn(options, axiosConfig)
+      * 参数全非必填
+      * options {
+      *   data, // 传给接口的数据
+      *   success(){}, // 请求成功数据无误回调
+      *   error(){}, // 请求成功数据有误回调
+      *   complete(){}, // 请求成功回调
+      *   networkError(){}, // 请求失败回调
+      *   requestComplete(){}, // 请求完成回调
+      *   progress(){}, // 上传进度回调，仅type为form时有用
+      * }
+      * axiosConfig {} axios配置，模块内有默认配置，特殊情况可直接传入覆盖，具体参数看axios官方文档
+      */
+      </span>
+      api.detail({
+        success() {
+          console.log(222);
+        }
+      });
+      
+      <span class="tips">// 3.修改默认方法
+
+      /* 为避免命名冲突，内部方法皆为静态方法，若要修改，请通过类修改。
+      * 具体有哪些方法请扒源码。
+      * 如网络异常报错源码：
+      * static defaultError(err, type = 'networkError') {
+      *   if (type === 'data') return console.log('格式异常' + err);
+      *   return console.error(err);
+      * }
+      */</span>
+      
+      <span class="tips">// ↓↓假设网络异常</span>
+
+      api.detail(); <span class="tips">// error</span>
+
+      BzAxios.defaultError = () => {
+        return console.error(err, 222)。
+      }
+
+      api.detail(); <span class="tips">// error, 222</span>
+    </code></pre>
+    <pre class="code-box"><code id="code">
+      
+    </code></pre>
+    <div class="btn-box">
+      <a class="btn-box__a" href="javascript:" data-code="demo1">获取用户信息</a>
+      <code class="btn-box__code" id="demo1">
+      <span class="tips">// 若点过旁边的按钮，请刷新后再试</span>
+  
+      api.personal({
+        success: function(data) {
+          console.log(data);
+          alert('用户信息获取成功');
+        },
+        networkError: function(err) {
+          console.log(err);
+          alert(err);
+        }
+      })
+      </code>
+      <a class="btn-box__a" href="javascript:" data-code="demo2">修改报错形式</a>
+      <code class="btn-box__code" id="demo2">
+        <span class="tips">// res请求成功后的处理器，networkError网络异常处理器
+        // 这样修改除progress其他回调都失效</span>
+
+        BzAxios.res = function(data) {
+          console.log(data)
+        }
+        BzAxios.networkError = function() {
+          return function(err) {
+            console.log('出错了');
+          }
+        }
+
+        api.personal({ 
+          <span class="tips">// 已无效</span>
+          success: function(data) {
+            alert('lalala~');
+          },
+          <span class="tips">// 已无效</span>
+          networkError: function(err) {
+            console.log(err);
+            alert(err);
+          }
+        })
+      </code>
+    </div>
+    <pre class="code-box">
+      <code>
+      // 后期待补充
+      // 并发请求
+      // require版（demo不好生成，axios qs等需要打包进去）
+      </code></pre>
+  </div>
+  <!-- <script src="https://source.bozhong.com/common/js/jquery.fe.min.js"></script> -->
+</body>
+</html>

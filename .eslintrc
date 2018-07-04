@@ -1,0 +1,24 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+    "no-console": 0,
+    "no-alert": 1,
+    "no-new": 0,
+    "no-shadow": 1,
+    "no-param-reassign": ["error", { props: false }],
+    "object-shorthand": 0,
+    "import/no-unresolved": 0,
+    "max-len": ["error", 150],
+    "allowTernary": 0,
+  },
+  "globals": {
+    "$": true,
+    "wx": true,
+    "document": true,
+    "window": true,
+    "navigator": true,
+  },
+  "plugins": [
+    "html"
+  ]
+}
