@@ -27,7 +27,6 @@ document.querySelector('.btn-box').addEventListener('click', (e) => {
     const Dom = document.getElementById(key);
     const code = Dom.innerHTML;
     document.getElementById('code').innerHTML = code;
-    console.log(code.replace(/<span class="tips">[^<>]*<\/span>/g, ''))
     return eval(code.replace(/<span class="tips">[^<>]*<\/span>/g, ''));
   }
 });

@@ -1,16 +1,15 @@
 /*
 * axios请求相关
 */
+// import 'es6-promise/auto';
 import qs from 'qs';
 import axios from 'axios';
 import Handler from './handler';
+
 export default class Request extends Handler {
   constructor(withCredentials = true) {
     super();
     axios.defaults.withCredentials = withCredentials;
-    if (new.target === Request) {
-      throw new Error('Request类不能实例化');
-    }
   }
   static axiosProxy(type = 'get', url, config = {}, axiosConfig = {}) {
     if (!url) return false;

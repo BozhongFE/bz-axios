@@ -4,9 +4,6 @@
 
 export default class Handler {
   constructor() {
-    if (new.target === Handler) {
-      throw new Error('Handler类不能实例化');
-    }
   }
   // 同步处理事件分流器，一般用于actions
   static shunt(...args) {
@@ -53,7 +50,7 @@ export default class Handler {
   }
   // 默认网络异常处理方法
   static defaultError(err, type = 'networkError') {
-    if (type === 'data') return console.log(`格式异常：${err && typeof err === 'string' ? err : err.message}`);
+    if (type === 'data') return console.log(`格式异常：${err && typeof err === 'string' ? err : err.error_message}`);
     return console.error(err);
   }
   // 网络异常处理

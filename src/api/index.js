@@ -1,5 +1,4 @@
 
-// import 'es6-promise';
 import Request from './module/request';
 
 class API extends Request {
@@ -18,10 +17,7 @@ class API extends Request {
     // object 配置 parent 上级属性
     const scoop = (config, parent = this) => {
       if (!config || !parent) return false;
-      const keys = Reflect.ownKeys(config);
-      const keysLength = keys.length;
-      for (let i = 0; i < keysLength; i += 1) {
-        const key = keys[i];
+      for (const key in config) {
         const value = config[key];
         if (value) {
           // 字符串判断为url，请求方法为get
@@ -30,7 +26,7 @@ class API extends Request {
           }
           if (Object.prototype.toString.call(value) === '[object Object]') {
             // conf为对象且不存在url属性，判断为模块，进行下一层遍历
-            if (!Reflect.has(value, 'url')) {
+            if (!value.hasOwnProperty('url')) {
               if (!parent[key]) parent[key] = {};
               scoop(value, parent[key]);
             } else {
