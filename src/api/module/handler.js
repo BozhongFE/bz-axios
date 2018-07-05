@@ -53,21 +53,25 @@ export default class Handler {
   }
   // 默认网络异常处理方法
   static defaultError(err, type = 'networkError') {
-    if (type === 'data') return console.log(`格式异常：${err}`);
+    if (type === 'data') return console.log(`格式异常：${err && typeof err === 'string' ? err : err.message}`);
     return console.error(err);
   }
   // 网络异常处理
   static networkError(networkErrorCB, requestCompleteCB) {
-    if (this.debug && (networkErrorCB || requestCompleteCB)) {
-      this.debug = false;
+    const self = this;
+    if (self.debug && (networkErrorCB || requestCompleteCB)) {
+      self.debug = false;
       return err => {
-        this.defaultError(err);
+        self.defaultError(err);
         if (networkErrorCB) networkErrorCB(err);
         if (requestCompleteCB) requestCompleteCB(err);
       };
     }
-    if (requestCompleteCB) requestCompleteCB();
-    return networkErrorCB || this.defaultError;
+    return (err) => {
+      if (requestCompleteCB) requestCompleteCB(err);
+      if (networkErrorCB) return networkErrorCB(err)
+      return self.defaultError(err);
+    }
   }
 }
 
