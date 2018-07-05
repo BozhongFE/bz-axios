@@ -10,11 +10,11 @@ const api = new BzAxios({
   detail: 'http://huodong.office.bzdev.net/restful/yunji/product/goods/detail.json?id=2',
   app: {
     methodName: {
-      type: 'post',
+      type: ['get', 'post'],
       url: 'http://api.office.bzdev.net/yunji/restful/pedometer/list.json',
     },
   },
-}, true, true);
+});
 // 挂到全局方便html调用
 window.BzAxios = BzAxios;
 window.api = api;
@@ -27,6 +27,7 @@ document.querySelector('.btn-box').addEventListener('click', (e) => {
     const Dom = document.getElementById(key);
     const code = Dom.innerHTML;
     document.getElementById('code').innerHTML = code;
+    console.log(code.replace(/<span class="tips">[^<>]*<\/span>/g, ''))
     return eval(code.replace(/<span class="tips">[^<>]*<\/span>/g, ''));
   }
 });

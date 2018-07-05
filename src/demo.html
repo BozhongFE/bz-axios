@@ -77,8 +77,15 @@
       * config-接口请求方法的配置，可多层嵌套
       * withCredentials-是否跨域, 默认true
       * debug-开启debug, 默认false
+      */
+    
+      /*
+      * 同个接口的多种请求：
+      * 1.生成实例时配置多条不同type的请求
+      * 2.生成实例时type配置数组，通过api.moduleName.methodName.typeName(..args)分别调用
+      * 3.方法调用时传入config.type，会覆盖配置时设置的type，具体看下方调用
       */</span>
-
+      
       var api = new BzAxios({
         <span class="tips">// 带有url字段则判断为方法, 通过api.personal(...args)调用</span>
         personal: {
@@ -88,9 +95,10 @@
         <span class="tips">// 字符串判断为get方法, 通过api.detail(...args)调用</span>
         detail: 'http://huodong.office.bzdev.net/restful/yunji/product/goods/detail.json?id=2',
         app: {
-          <span class="tips">// 模块内方法，通过api.app.methodName(...args)调用</span>
+          <span class="tips">// 模块内方法，通过api.app.methodName(...args)调用
+          // type传入数组，需要分别调用methodName.get/methodName.post</span>
           methodName: {
-            type: 'post',
+            type: ['GET','POST'], 
             url: 'http://api.office.bzdev.net/yunji/restful/pedometer/list.json',
           },
         },
@@ -99,9 +107,10 @@
       <span class="tips">// 2.调用
       
       /*
-      * api.moduleName.fn(options, axiosConfig)
+      * api.moduleName.fn(config, axiosConfig)
       * 参数全非必填
-      * options {
+      * config {
+      *   type, // 请求方法，传入会覆盖配置时定义的type
       *   data, // 传给接口的数据
       *   success(){}, // 请求成功数据无误回调
       *   error(){}, // 请求成功数据有误回调
@@ -182,6 +191,18 @@
           networkError: function(err) {
             console.log(err);
             alert(err);
+          }
+        })
+      </code>
+      <a class="btn-box__a" href="javascript:" data-code="demo3">用post请求配置为get的方法</a>
+      <code class="btn-box__code" id="demo3">
+        <span class="tips">// 传入type 覆盖配置时的get
+        // 若点过旁边的按钮，error无效</span>
+        api.detail({
+          type: 'post',
+          error: function(err) {
+            console.log(err);
+            alert(JSON.stringify(err));
           }
         })
       </code>

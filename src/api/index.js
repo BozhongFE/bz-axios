@@ -46,6 +46,17 @@ class API extends Request {
   // 绑定请求
   static createRequest(obj, key, url, type = 'get') {
     if (!obj || !key || !url || typeof url !== 'string') return false;
+    // 若type为数组 生成多个方法
+    if (Object.prototype.toString.call(type) === '[object Array]' && type.length) {
+      const l = type.length;
+      if (!obj[key]) obj[key] = {};
+      for (let i = 0; i < l; i += 1) {
+        obj[key][type[i]] = (config, axiosConfig) => {
+          this.axiosProxy(type[i], url, config, axiosConfig);
+        };
+      }
+      return false;
+    }
     return obj[key] = (config, axiosConfig) => {
       this.axiosProxy(type, url, config, axiosConfig);
     };
