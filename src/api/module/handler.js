@@ -41,7 +41,7 @@ export default class Handler {
     } else if (errorCB) {
       errorCB(data);
     } else {
-      this.defaultError(data, 'data');
+      this._defaultError(data, 'data');
     }
     if (completeCB) completeCB(data);
     if (requestComplete) requestComplete(data);
@@ -57,7 +57,7 @@ export default class Handler {
     if (self._debug && (networkErrorCB || requestCompleteCB)) {
       self._debug = false;
       return (err) => {
-        self.defaultError(err);
+        self._defaultError(err);
         if (networkErrorCB) networkErrorCB(err);
         if (requestCompleteCB) requestCompleteCB(err);
       };
@@ -65,7 +65,7 @@ export default class Handler {
     return (err) => {
       if (requestCompleteCB) requestCompleteCB(err);
       if (networkErrorCB) return networkErrorCB(err);
-      return self.defaultError(err);
+      return self._defaultError(err);
     }
   }
 }
