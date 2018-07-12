@@ -3,10 +3,8 @@
 */
 
 export default class Handler {
-  constructor() {
-  }
   // 同步处理事件分流器，一般用于actions
-  static shunt(...args) {
+  _shunt(...args) {
     return (...resArgs) => {
       args.forEach((fn) => {
         if (Object.prototype.toString.call(fn) === '[object Function]') {
@@ -16,7 +14,7 @@ export default class Handler {
     };
   }
   // 异步分流器
-  static shuntAsync(...args) {
+  _shuntAsync(...args) {
     return (...resArgs) => {
       let index = 0;
       const loop = () => {
@@ -33,10 +31,10 @@ export default class Handler {
     };
   }
   // 请求成功后处理接口数据
-  static res(data, successCB, errorCB, completeCB, requestComplete) {
-    if (this.debug) {
+  _res(data, successCB, errorCB, completeCB, requestComplete) {
+    if (this._debug) {
       console.log(data);
-      this.debug = false;
+      this._debug = false;
     }
     if (data.error_code === 0) {
       if (successCB) successCB(data);
@@ -49,16 +47,16 @@ export default class Handler {
     if (requestComplete) requestComplete(data);
   }
   // 默认网络异常处理方法
-  static defaultError(err, type = 'networkError') {
+  _defaultError(err, type = 'networkError') {
     if (type === 'data') return console.log(`格式异常：${err && typeof err === 'string' ? err : err.error_message}`);
     return console.error(err);
   }
   // 网络异常处理
-  static networkError(networkErrorCB, requestCompleteCB) {
+  _networkError(networkErrorCB, requestCompleteCB) {
     const self = this;
-    if (self.debug && (networkErrorCB || requestCompleteCB)) {
-      self.debug = false;
-      return err => {
+    if (self._debug && (networkErrorCB || requestCompleteCB)) {
+      self._debug = false;
+      return (err) => {
         self.defaultError(err);
         if (networkErrorCB) networkErrorCB(err);
         if (requestCompleteCB) requestCompleteCB(err);
@@ -66,7 +64,7 @@ export default class Handler {
     }
     return (err) => {
       if (requestCompleteCB) requestCompleteCB(err);
-      if (networkErrorCB) return networkErrorCB(err)
+      if (networkErrorCB) return networkErrorCB(err);
       return self.defaultError(err);
     }
   }

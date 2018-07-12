@@ -74,7 +74,7 @@
 
       /* 
       * new BzAxios(config, withCredentials = true, debug = false)
-      * config-接口请求方法的配置，可多层嵌套
+      * config-接口请求方法的配置，可多层嵌套, 标识符请避开下划线_
       * withCredentials-是否跨域, 默认true
       * debug-开启debug, 默认false
       */
@@ -130,10 +130,10 @@
       
       <span class="tips">// 3.修改默认方法
 
-      /* 为避免命名冲突，内部方法皆为静态方法，若要修改，请通过类修改。
+      /* 为避免命名冲突，内部方法皆带_
       * 具体有哪些方法请扒源码。
       * 如网络异常报错源码：
-      * static defaultError(err, type = 'networkError') {
+      * _defaultError(err, type = 'networkError') {
       *   if (type === 'data') return console.log('格式异常' + err);
       *   return console.error(err);
       * }
@@ -143,7 +143,7 @@
 
       api.detail(); <span class="tips">// error</span>
 
-      BzAxios.defaultError = () => {
+      api._defaultError = () => {
         return console.error(err, 222)。
       }
 
@@ -170,13 +170,14 @@
       </code>
       <a class="btn-box__a" href="javascript:" data-code="demo2">修改报错形式</a>
       <code class="btn-box__code" id="demo2">
-        <span class="tips">// res请求成功后的处理器，networkError网络异常处理器
+        <span class="tips">// _res请求成功后的处理器，_networkError网络异常处理器
         // 这样修改除progress其他回调都失效</span>
 
-        BzAxios.res = function(data) {
-          console.log(data)
+        api._res = function(data) {
+          alert("_res已被修改")
+          console.log(this._debug)
         }
-        BzAxios.networkError = function() {
+        api._networkError = function() {
           return function(err) {
             console.log('出错了');
           }

@@ -16,7 +16,6 @@ const api = new BzAxios({
   },
 });
 // 挂到全局方便html调用
-window.BzAxios = BzAxios;
 window.api = api;
 
 document.querySelector('.btn-box').addEventListener('click', (e) => {

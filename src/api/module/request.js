@@ -11,7 +11,7 @@ export default class Request extends Handler {
     super();
     axios.defaults.withCredentials = withCredentials;
   }
-  static axiosProxy(type = 'get', url, config = {}, axiosConfig = {}) {
+  _axiosProxy(type = 'get', url, config = {}, axiosConfig = {}) {
     if (!url) return false;
     // 请求方法处理
     let apiType = 'get';
@@ -70,7 +70,7 @@ export default class Request extends Handler {
       }
     }
     return axios[apiType](...apiArgs).then((res) => {
-      this.res(res.data, config.success, config.error, config.complete, config.requestComplete);
-    }).catch(this.networkError(config.networkError, config.requestComplete));
+      this._res(res.data, config.success, config.error, config.complete, config.requestComplete);
+    }).catch(this._networkError(config.networkError, config.requestComplete));
   }
 }
