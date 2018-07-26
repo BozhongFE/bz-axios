@@ -8,7 +8,7 @@ export default class Handler {
     return (...resArgs) => {
       args.forEach((fn) => {
         if (Object.prototype.toString.call(fn) === '[object Function]') {
-          fn(resArgs);
+          fn.apply(this, resArgs);
         }
       });
     };
