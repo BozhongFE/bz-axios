@@ -59,12 +59,12 @@
   <div id="app">
     <pre class="code-box"><code>
       <span class="tips">//------ npm安装 -------</span>
-      npm install https://github.com/BozhongFE/bz-axios#v0.1.1
+      npm install https://github.com/BozhongFE/bz-axios#v0.1.2
 
       import BzAxios from 'bz-axios';
       ...
       <!-- <span class="tips">//------ requirejs引入 -------</span>
-      require(['mod/bz-axios/0.1.1'], function(BzAxios) {
+      require(['mod/bz-axios/0.1.2'], function(BzAxios) {
         ...
       } -->
 
@@ -205,6 +205,23 @@
             console.log(err);
             alert(JSON.stringify(err));
           }
+        })
+      </code>
+
+      <a class="btn-box__a" href="javascript:" data-code="demo4">覆盖axiosConfig</a>
+      <code class="btn-box__code" id="demo4">
+        <span class="tips">// 传入type 覆盖配置时的get
+        // 若点过旁边的按钮，error无效</span>
+        api.detail({
+          type: 'post',
+          error: function(err) {
+            console.log(err);
+            alert(JSON.stringify(err));
+          }
+        }, {
+          params: {
+            test: ''
+          },
         })
       </code>
     </div>

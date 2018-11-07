@@ -1,9 +1,19 @@
 
 const path = require('path');
+const address = require('address');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const htmlWebpackPlugin = require('html-webpack-plugin');
 
 const version = process.env.npm_package_version;
+
+// 获取ip
+const getAddressIP = () => {
+  let lanUrlForConfig = address.ip();
+  if (!/^10[.]|^172[.](1[6-9]|2[0-9]|3[0-1])[.]|^192[.]168[.]/.test(lanUrlForConfig)) {
+    lanUrlForConfig = undefined;
+  }
+  return lanUrlForConfig;
+}
 
 module.exports = {
   module: {
@@ -18,6 +28,13 @@ module.exports = {
         }
       }
     ]
+  },
+  devServer: {
+    historyApiFallback: true,
+    noInfo: true,
+    overlay: true,
+    host: getAddressIP() || '0.0.0.0',
+    port: 8000
   },
   plugins: [
   ],

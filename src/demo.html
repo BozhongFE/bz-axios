@@ -207,6 +207,23 @@
           }
         })
       </code>
+
+      <a class="btn-box__a" href="javascript:" data-code="demo4">覆盖axiosConfig</a>
+      <code class="btn-box__code" id="demo4">
+        <span class="tips">// 传入type 覆盖配置时的get
+        // 若点过旁边的按钮，error无效</span>
+        api.detail({
+          type: 'post',
+          error: function(err) {
+            console.log(err);
+            alert(JSON.stringify(err));
+          }
+        }, {
+          params: {
+            test: ''
+          },
+        })
+      </code>
     </div>
     <pre class="code-box">
       <code>

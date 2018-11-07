@@ -5,13 +5,13 @@ import BzAxios from '../dist/bz-axios.umd.js';
 const api = new BzAxios({
   personal: {
     type: 'GET', 
-    url: 'http://account.office.bzdev.net/restful/personal.json',
+    url: 'https://account.office.bzdev.net/restful/personal.json',
   },
-  detail: 'http://huodong.office.bzdev.net/restful/yunji/product/goods/detail.json?id=2',
+  detail: 'https://huodong.office.bzdev.net/restful/yunji/product/goods/detail.json?id=2',
   app: {
     methodName: {
       type: ['get', 'post'],
-      url: 'http://api.office.bzdev.net/yunji/restful/pedometer/list.json',
+      url: 'https://api.office.bzdev.net/yunji/restful/pedometer/list.json',
     },
   },
 });

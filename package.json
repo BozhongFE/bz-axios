@@ -1,10 +1,10 @@
 {
   "name": "bz-axios",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "author": "xc <xiechun@bozhong.com>",
   "scripts": {
-    "dev": "cross-env webpack-dev-server --config ./build/webpack.conf.js --mode development --host 192.168.80.106 --port 8000",
+    "dev": "cross-env webpack-dev-server --config ./build/webpack.conf.js --mode development",
     "build": "cross-env webpack --config ./build/webpack.conf.js --mode production",
     "build:moe": "node build/build.moe.js",
     "build:demo": "node build/build.demo.js"
@@ -22,6 +22,7 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "address": "^1.0.3",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-polyfill": "^6.26.0",

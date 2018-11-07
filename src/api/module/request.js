@@ -63,6 +63,11 @@ export default class Request extends Handler {
     }
     // 若外部传入axios配置，以外部传入为主
     if (axiosConfig) {
+      if (/post|put/.test(apiType)) {
+        if (!apiArgs[2]) apiArgs[2] = {};
+      } else {
+        if (!apiArgs[1]) apiArgs[1] = {};
+      }
       let originalConfig = /post|put/.test(apiType) ? apiArgs[2] : apiArgs[1];
       if (!originalConfig) originalConfig = {};
       for (const key in axiosConfig) {
