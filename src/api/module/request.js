@@ -22,7 +22,7 @@ export default class Request extends Handler {
       apiType = type.toLowerCase();
     }
     // 请求数据处理
-    const apiData = /post|put|delete/gi.test(apiType) ? qs.stringify(config.data) : config.data;
+    const apiData = /post|put|delete|form/gi.test(apiType) ? qs.stringify(config.data) : config.data;
     // 根据请求方法，处理不同默认配置
     const apiArgs = [url];
     switch (apiType) {
