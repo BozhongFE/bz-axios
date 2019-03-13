@@ -68,11 +68,6 @@ export default class Request extends Handler {
       } else {
         if (!apiArgs[1]) apiArgs[1] = {};
       }
-      let originalConfig = /post|put/.test(apiType) ? apiArgs[2] : apiArgs[1];
-      if (!originalConfig) originalConfig = {};
-      for (const key in axiosConfig) {
-        originalConfig[key] = axiosConfig[key];
-      }
     }
     return axios[apiType](...apiArgs).then((res) => {
       this._res(res.data, config.success, config.error, config.complete, config.requestComplete);
