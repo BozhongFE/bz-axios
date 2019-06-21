@@ -3,11 +3,12 @@ import Request from './module/request';
 
 class API extends Request {
   // apiConf需要生成的接口请求， debug是否开启debug模式
-  constructor(apiConf, withCredentials = true, debug = false) {
+  constructor(apiConf, withCredentials = true, debug = false, params) {
     super(withCredentials);
     this._createMethods(apiConf, this);
     // 开启debug
     this._debug = debug;
+    if (params) this.params = params;
   }
   // 为避免命名重复问题，内部方法设为静态方法
   // 生成实例的方法

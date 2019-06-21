@@ -3,6 +3,17 @@
 */
 
 export default class Handler {
+  // 拼接url
+  _setUrlParam(url, obj) {
+    if (!url || !obj) return url;
+    let result = url;
+    for (const key in obj) {
+      if (obj[key]) {
+        result = result.indexOf('?') !== -1 ? `${result}&${key}=${obj[key]}` : `${result}?${key}=${obj[key]}`;
+      }
+    }
+    return result;
+  }
   // 同步处理事件分流器，一般用于actions
   _shunt(...args) {
     return (...resArgs) => {

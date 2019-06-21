@@ -21,10 +21,11 @@ export default class Request extends Handler {
     } else if (type && typeof type === 'string') {
       apiType = type.toLowerCase();
     }
+    const self = this;
     // 请求数据处理
     const apiData = /post|put|delete|form/gi.test(apiType) ? qs.stringify(config.data) : config.data;
     // 根据请求方法，处理不同默认配置
-    const apiArgs = [url];
+    const apiArgs = [self._setUrlParam(url, self.params)];
     switch (apiType) {
       case 'post':
         apiArgs.push(apiData);
@@ -70,7 +71,7 @@ export default class Request extends Handler {
       }
     }
     return axios[apiType](...apiArgs).then((res) => {
-      this._res(res.data, config.success, config.error, config.complete, config.requestComplete);
-    }).catch(this._networkError(config.networkError, config.requestComplete));
+      self._res(res.data, config.success, config.error, config.complete, config.requestComplete);
+    }).catch(self._networkError(config.networkError, config.requestComplete));
   }
 }

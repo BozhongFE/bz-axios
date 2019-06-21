@@ -1,6 +1,6 @@
 {
   "name": "bz-axios",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "",
   "author": "xc <xiechun@bozhong.com>",
   "scripts": {
@@ -22,7 +22,6 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "address": "^1.0.3",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-polyfill": "^6.26.0",
