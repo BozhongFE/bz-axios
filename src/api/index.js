@@ -1,14 +1,17 @@
 
 import Request from './module/request';
+import axios from 'axios';
 
 class API extends Request {
   // apiConf需要生成的接口请求， debug是否开启debug模式
-  constructor(apiConf, withCredentials = true, debug = false, params) {
+  constructor(apiConf, withCredentials = true, debug = false, params, ajaxHeaders) {
     super(withCredentials);
-    this._createMethods(apiConf, this);
+    const self = this;
+    self._createMethods(apiConf, self);
     // 开启debug
-    this._debug = debug;
-    if (params) this.params = params;
+    self._debug = debug;
+    if (params) self.params = params;
+    if (ajaxHeaders) self.ajaxHeaders = ajaxHeaders;
   }
   // 为避免命名重复问题，内部方法设为静态方法
   // 生成实例的方法

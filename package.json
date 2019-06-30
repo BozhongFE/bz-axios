@@ -1,10 +1,10 @@
 {
   "name": "bz-axios",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "author": "xc <xiechun@bozhong.com>",
   "scripts": {
-    "dev": "cross-env webpack-dev-server --config ./build/webpack.conf.js --mode development",
+    "dev": "cross-env webpack-dev-server --config ./build/webpack.conf.js --mode development --open",
     "build": "cross-env webpack --config ./build/webpack.conf.js --mode production",
     "build:moe": "node build/build.moe.js",
     "build:demo": "node build/build.demo.js"

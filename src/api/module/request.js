@@ -63,11 +63,18 @@ export default class Request extends Handler {
         });
     }
     // 若外部传入axios配置，以外部传入为主
-    if (axiosConfig) {
-      if (/post|put/.test(apiType)) {
-        if (!apiArgs[2]) apiArgs[2] = {};
-      } else {
-        if (!apiArgs[1]) apiArgs[1] = {};
+    if (axiosConfig || self.ajaxHeaders) {
+      let originalConfig;
+      const i = /post|put/.test(apiType) ? 2 : 1;
+      originalConfig = apiArgs[i] || (apiArgs[i] = {});
+      if (axiosConfig) {
+        for (const key in axiosConfig) {
+          originalConfig[key] = axiosConfig[key];
+        }
+      } 
+      if (self.ajaxHeaders) {
+        if (!originalConfig.headers) originalConfig.headers = {};
+        Object.assign(originalConfig.headers, self.ajaxHeaders);
       }
     }
     return axios[apiType](...apiArgs).then((res) => {
