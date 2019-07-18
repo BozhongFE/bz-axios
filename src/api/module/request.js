@@ -1,6 +1,7 @@
 /*
 * axios请求相关
 */
+/* eslint no-underscore-dangle: ["error", { "allow": ["_setUrlParam", "_res", "_networkError"] }] */
 // import 'es6-promise/auto';
 import qs from 'qs';
 import axios from 'axios';
@@ -11,6 +12,7 @@ export default class Request extends Handler {
     super();
     axios.defaults.withCredentials = withCredentials;
   }
+
   _axiosProxy(type = 'get', url, config = {}, axiosConfig = {}) {
     if (!url) return false;
     // 请求方法处理
@@ -64,14 +66,15 @@ export default class Request extends Handler {
     }
     // 若外部传入axios配置，以外部传入为主
     if (axiosConfig || self.ajaxHeaders) {
-      let originalConfig;
       const i = /post|put/.test(apiType) ? 2 : 1;
-      originalConfig = apiArgs[i] || (apiArgs[i] = {});
+      const originalConfig = apiArgs[i] || (apiArgs[i] = {});
       if (axiosConfig) {
         for (const key in axiosConfig) {
-          originalConfig[key] = axiosConfig[key];
+          if (Object.prototype.hasOwnProperty.call(axiosConfig, key)) {
+            originalConfig[key] = axiosConfig[key];
+          }
         }
-      } 
+      }
       if (self.ajaxHeaders) {
         if (!originalConfig.headers) originalConfig.headers = {};
         Object.assign(originalConfig.headers, self.ajaxHeaders);

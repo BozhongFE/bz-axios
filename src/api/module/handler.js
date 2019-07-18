@@ -1,9 +1,11 @@
 /*
 * api预处理器/后处理器
 */
+/* eslint no-underscore-dangle: ["error", { "allow": ["_defaultError", "_debug"] }] */
 
 export default class Handler {
   // 拼接url
+  // eslint-disable-next-line class-methods-use-this
   _setUrlParam(url, obj) {
     if (!url || !obj) return url;
     let result = url;
@@ -14,6 +16,7 @@ export default class Handler {
     }
     return result;
   }
+
   // 同步处理事件分流器，一般用于actions
   _shunt(...args) {
     return (...resArgs) => {
@@ -24,7 +27,9 @@ export default class Handler {
       });
     };
   }
+
   // 异步分流器
+  // eslint-disable-next-line class-methods-use-this
   _shuntAsync(...args) {
     return (...resArgs) => {
       let index = 0;
@@ -41,6 +46,7 @@ export default class Handler {
       loop();
     };
   }
+
   // 请求成功后处理接口数据
   _res(data, successCB, errorCB, completeCB, requestComplete) {
     if (this._debug) {
@@ -57,11 +63,14 @@ export default class Handler {
     if (completeCB) completeCB(data);
     if (requestComplete) requestComplete(data);
   }
+
   // 默认网络异常处理方法
+  // eslint-disable-next-line class-methods-use-this
   _defaultError(err, type = 'networkError') {
     if (type === 'data') return console.log(`格式异常：${err && typeof err === 'string' ? err : err.error_message}`);
     return console.error(err);
   }
+
   // 网络异常处理
   _networkError(networkErrorCB, requestCompleteCB) {
     const self = this;
@@ -77,7 +86,6 @@ export default class Handler {
       if (requestCompleteCB) requestCompleteCB(err);
       if (networkErrorCB) return networkErrorCB(err);
       return self._defaultError(err);
-    }
+    };
   }
 }
-
