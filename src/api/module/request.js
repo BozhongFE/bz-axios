@@ -1,6 +1,6 @@
 /*
-* axios请求相关
-*/
+ * axios请求相关
+ */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_setUrlParam", "_res", "_networkError"] }] */
 // import 'es6-promise/auto';
 import qs from 'qs';
@@ -15,73 +15,51 @@ export default class Request extends Handler {
 
   _axiosProxy(type = 'get', url, config = {}, axiosConfig = {}) {
     if (!url) return false;
-    // 请求方法处理
-    let apiType = 'get';
-    // 优先config
-    if (config && config.type) {
-      apiType = config.type.toLowerCase();
-    } else if (type && typeof type === 'string') {
-      apiType = type.toLowerCase();
+    const requestType = (config.type || type).toLowerCase();
+    const apiType = requestType === 'form' ? 'post' : requestType;
+
+    const isParamsOption = !/post|put|delete/gi.test(apiType);
+    const apiDataKey = isParamsOption ? 'params' : 'data';
+
+    const urlParams = this._getUrlParams(url);
+    const requestParams = isParamsOption ?
+      Object.assign(urlParams, this.params, config.data) : this.params;
+
+    const paramsIndex = url.indexOf('?');
+    const href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
+    const apiData = /post|put|delete/gi.test(apiType) ?
+      qs.stringify(config.data) : config.data;
+
+    const apiParams = {
+      method: apiType,
+      url: href,
+      [apiDataKey]: isParamsOption ? requestParams : apiData,
+      headers: {}
     }
-    const self = this;
-    // 请求数据处理
-    const apiData = /post|put|delete|form/gi.test(apiType) ? qs.stringify(config.data) : config.data;
-    // 根据请求方法，处理不同默认配置
-    const apiArgs = [self._setUrlParam(url, self.params)];
-    switch (apiType) {
-      case 'post':
-        apiArgs.push(apiData);
-        break;
-      case 'put':
-        apiArgs.push(apiData);
-        apiArgs.push({
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        });
-        break;
-      case 'delete':
-        apiArgs.push({
-          data: apiData,
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        });
-        break;
-      // 特殊值，用于上传
-      case 'form':
-        apiArgs.push({
-          data: apiData,
-          headers: { 'Content-Type': 'multipart/form-data' },
-          onUploadProgress(process) {
-            if (config.progress) config.progress(process);
-          },
-        });
-        apiType = 'post';
-        break;
-      default:
-        apiArgs.push({
-          params: apiData,
-        });
+    // 处理请求头
+    if (/put|delete/gi.test(requestType)) {
+      apiParams.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    } else if (/form/gi.test(requestType)) {
+      apiParams.headers['Content-Type'] = 'multipart/form-data';
+      apiParams.onUploadProgress = process => {
+        if (config.progress) config.progress(process);
+      }
     }
     // 若外部传入axios配置，以外部传入为主
-    if (axiosConfig || self.ajaxHeaders) {
-      const i = /post|put/.test(apiType) ? 2 : 1;
-      const originalConfig = apiArgs[i] || (apiArgs[i] = {});
-      if (axiosConfig) {
-        for (const key in axiosConfig) {
-          if (Object.prototype.hasOwnProperty.call(axiosConfig, key)) {
-            originalConfig[key] = axiosConfig[key];
-          }
-        }
-      }
-      if (self.ajaxHeaders) {
-        if (!originalConfig.headers) originalConfig.headers = {};
-        Object.assign(originalConfig.headers, self.ajaxHeaders);
+    if (this.ajaxHeaders) Object.assign(apiParams.headers, this.ajaxHeaders);
+    for (let key in axiosConfig) {
+      if (Object.prototype.hasOwnProperty.call(axiosConfig, key)) {
+        apiParams[key] = axiosConfig[key];
       }
     }
-    return axios[apiType](...apiArgs).then((res) => {
-      self._res(res.data, config.success, config.error, config.complete, config.requestComplete);
-    }).catch(self._networkError(config.networkError, config.requestComplete));
+
+    const result = axios(apiParams);
+    result.then(res => {
+      this._res(res.data, config.success, config.error, config.complete, config.requestComplete);
+    }).catch(this._networkError(config.networkError, config.requestComplete));
+
+    return new Promise((resolve, reject) => {
+      result.then(res => resolve(res.data)).catch(err => reject(err));
+    })
   }
 }

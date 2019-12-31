@@ -25,19 +25,17 @@ class API extends Request {
       for (const key in config) {
         if (Object.prototype.hasOwnProperty.call(config, key)) {
           const value = config[key];
-          if (value) {
-            // 字符串判断为url，请求方法为get
-            if (typeof value === 'string') {
-              this._createRequest(parent, key, value);
-            }
-            if (Object.prototype.toString.call(value) === '[object Object]') {
-              // conf为对象且不存在url属性，判断为模块，进行下一层遍历
-              if (!Object.prototype.hasOwnProperty.call(value, 'url')) {
-                if (!parent[key]) parent[key] = {};
-                scoop(value, parent[key]);
-              } else {
-                this._createRequest(parent, key, value.url, value.type);
-              }
+          // 字符串判断为url，请求方法为get
+          if (typeof value === 'string') {
+            this._createRequest(parent, key, value);
+          }
+          if (Object.prototype.toString.call(value) === '[object Object]') {
+            // conf为对象且不存在url属性，判断为模块，进行下一层遍历
+            if (!Object.prototype.hasOwnProperty.call(value, 'url')) {
+              if (!parent[key]) parent[key] = {};
+              scoop(value, parent[key]);
+            } else {
+              this._createRequest(parent, key, value.url, value.type);
             }
           }
         }
@@ -56,14 +54,14 @@ class API extends Request {
       if (!obj[key]) obj[key] = {};
       for (let i = 0; i < l; i += 1) {
         obj[key][type[i]] = (config, axiosConfig) => {
-          this._axiosProxy(type[i], url, config, axiosConfig);
+          return this._axiosProxy(type[i], url, config, axiosConfig);
         };
       }
       return false;
     }
     // eslint-disable-next-line no-return-assign
     return obj[key] = (config, axiosConfig) => {
-      this._axiosProxy(type, url, config, axiosConfig);
+      return this._axiosProxy(type, url, config, axiosConfig);
     };
   }
 }

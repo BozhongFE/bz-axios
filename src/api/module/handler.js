@@ -1,20 +1,35 @@
 /*
-* api预处理器/后处理器
-*/
+ * api预处理器/后处理器
+ */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_defaultError", "_debug"] }] */
 
 export default class Handler {
+  _getUrlParams(url) {
+    let href = url;
+    const regExp = /(\w+)=(\w+)/ig;
+    const pos = href.indexOf('?');
+    const params = {};
+
+    if (pos !== -1) {
+      href.substr(pos);
+      href.replace(regExp, function (match, matchExp1, matchExp2) {
+        params[matchExp1] = matchExp2;
+      })
+    }
+    return params;
+  }
   // 拼接url
   // eslint-disable-next-line class-methods-use-this
-  _setUrlParam(url, obj) {
-    if (!url || !obj) return url;
-    let result = url;
-    for (const key in obj) {
-      if (obj[key]) {
-        result = result.indexOf('?') !== -1 ? `${result}&${key}=${obj[key]}` : `${result}?${key}=${obj[key]}`;
-      }
-    }
-    return result;
+  _setUrlParam(url, obj = {}) {
+    if (!url) return url;
+
+    const params = Object.assign(this._getUrlParams(url), obj);
+    const pos = url.indexOf('?');
+    const isHadParams = pos !== -1;
+    const href = isHadParams ? url.substring(0, pos) : url;
+
+    return href + '?' +
+      Object.keys(params).map(key => `${key}=${obj[key]}`).join('&');
   }
 
   // 同步处理事件分流器，一般用于actions
