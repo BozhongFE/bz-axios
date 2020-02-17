@@ -1,16 +1,16 @@
 {
   "name": "bz-axios",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "",
   "author": "xc <xiechun@bozhong.com>",
   "scripts": {
     "dev": "cross-env webpack-dev-server --config ./build/webpack.conf.js --mode development --open",
-    "build": "cross-env webpack --config ./build/webpack.conf.js --mode production",
+    "build": "node ./build/build.js",
     "build:moe": "node build/build.moe.js",
     "build:demo": "node build/build.demo.js"
   },
-  "main": "dist/bz-axios.umd.js",
-  "module": "dist/bz-axios.umd.js",
+  "main": "dist/bz-axios.esm.js",
+  "module": "dist/bz-axios.esm.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/BozhongFE/bz-axios.git"
@@ -18,7 +18,13 @@
   "dependencies": {
     "axios": "^0.18.0",
     "es6-promise": "^4.2.4",
-    "qs": "^6.5.2"
+    "qs": "^6.5.2",
+    "rollup": "^0.48.2",
+    "rollup-plugin-buble": "^0.19.2",
+    "rollup-plugin-commonjs": "^8.4.1",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-postcss": "^1.6.2",
+    "uglify-js": "^3.4.4"
   },
   "license": "ISC",
   "devDependencies": {
