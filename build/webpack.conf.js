@@ -59,7 +59,7 @@ if (process.argv.indexOf('development') !== -1) {
   module.exports.plugins = (module.exports.plugins || []).concat([
     new htmlWebpackPlugin({
       filename: 'index.html',
-      template: './src/demo.html',
+      template: './src/demo-1.0.0.html',
       chunks: ['main'],
       version,
     }),
