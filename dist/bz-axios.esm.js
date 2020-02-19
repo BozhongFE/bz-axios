@@ -261,7 +261,7 @@ Request.prototype._createRequest = function _createRequest (obj, key, url, type)
   if (!isHadGetMethod && !obj[key]) { obj[key] = {}; }
 
   types.forEach(function (method) {
-    obj[key][method] = requestMethod(method);
+    obj[key][method.toUpperCase()] = requestMethod(method);
   });
 };
 

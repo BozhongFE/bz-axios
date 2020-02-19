@@ -66,7 +66,7 @@ class Request  {
     if (!isHadGetMethod && !obj[key]) obj[key] = {};
 
     types.forEach(method => {
-      obj[key][method] = requestMethod(method);
+      obj[key][method.toUpperCase()] = requestMethod(method);
     })
   }
 }
