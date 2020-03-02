@@ -6,8 +6,11 @@ import axios from 'axios';
  */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_defaultError", "_debug"] }] */
 
-var Handler = function Handler () {};
+var Handler = function Handler(_debug) {
+  if ( _debug === void 0 ) _debug = false;
 
+  this._debug = _debug;
+};
 Handler.prototype._getUrlParams = function _getUrlParams (url) {
   var href = url;
   var regExp = /(\w+)=(\w+)/ig;
@@ -125,88 +128,88 @@ Handler.prototype._networkError = function _networkError (networkErrorCB, reques
   };
 };
 
-function request(type, url, config, requestConf, obj) {
-  if ( type === void 0 ) type = 'get';
-  if ( config === void 0 ) config = {};
-  if ( requestConf === void 0 ) requestConf = {};
-  if ( obj === void 0 ) obj = {};
+var Request = /*@__PURE__*/(function (Handler$$1) {
+  function Request(params, ajaxHeaders,  _debug, withCredentials) {
+    if ( _debug === void 0 ) _debug = false;
+    if ( withCredentials === void 0 ) withCredentials = true;
 
-  if (!url) { return false; }
-  axios.defaults.withCredentials =
-    typeof obj.withCredentials === 'boolean' ?
-    obj.withCredentials : true;
-  var handler = new Handler(obj._debug || false);
-  var requestType = (config.type || type).toLowerCase();
-  var apiType = requestType === 'form' ? 'post' : requestType;
+    Handler$$1.call(this, _debug);
+    this.params = params;
+    this.ajaxHeaders = ajaxHeaders;
+    axios.defaults.withCredentials = withCredentials;
+  }
 
-  var isParamsOption = !/post|put|delete/gi.test(apiType);
-  var apiDataKey = isParamsOption ? 'params' : 'data';
-  // 处理params参数
-  var urlParams = handler._getUrlParams(url);
-  var requestParams = isParamsOption ?
-    Object.assign(urlParams, obj.params, config.data) : obj.params;
+  if ( Handler$$1 ) Request.__proto__ = Handler$$1;
+  Request.prototype = Object.create( Handler$$1 && Handler$$1.prototype );
+  Request.prototype.constructor = Request;
+  Request.prototype._requestProxy = function _requestProxy (type, url, config, requestConf) {
+    var this$1 = this;
+    if ( type === void 0 ) type = 'get';
+    if ( config === void 0 ) config = {};
+    if ( requestConf === void 0 ) requestConf = {};
 
-  var paramsIndex = url.indexOf('?');
-  var href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
-  var apiData = /post|put|delete/gi.test(apiType) ?
-    qs.stringify(config.data) : config.data;
+    if (!url) { return false; }
+    var requestType = (config.type || type).toLowerCase();
+    var apiType = requestType === 'form' ? 'post' : requestType;
 
-  var apiParams = {
-    method: apiType,
-    url: href
-  };
-  apiParams[apiDataKey] = isParamsOption ? requestParams : apiData;
-  apiParams.headers = {};
-  // 处理请求头
-  if (/put|delete/gi.test(requestType)) {
-    apiParams.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-  } else if (/form/gi.test(requestType)) {
-    apiParams.headers['Content-Type'] = 'multipart/form-data';
-    apiParams.onUploadProgress = function (process) {
-      if (config.progress) { config.progress(process); }
+    var isParamsOption = !/post|put|delete/gi.test(apiType);
+    var apiDataKey = isParamsOption ? 'params' : 'data';
+    // 处理params参数
+    var urlParams = this._getUrlParams(url);
+    var requestParams = isParamsOption ?
+      Object.assign(urlParams, this.params, config.data) : this.params;
+
+    var paramsIndex = url.indexOf('?');
+    var href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
+    var apiData = /post|put|delete/gi.test(apiType) ?
+      qs.stringify(config.data) : config.data;
+
+    var apiParams = {
+      method: apiType,
+      url: href
     };
-  }
-  // 若外部传入axios配置，以外部传入为主
-  if (obj.ajaxHeaders) { Object.assign(apiParams.headers, obj.ajaxHeaders); }
-  for (var key in requestConf) {
-    if (Object.prototype.hasOwnProperty.call(requestConf, key)) {
-      apiParams[key] = requestConf[key];
+    apiParams[apiDataKey] = isParamsOption ? requestParams : apiData;
+    apiParams.headers = {};
+    // 处理请求头
+    if (/put|delete/gi.test(requestType)) {
+      apiParams.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    } else if (/form/gi.test(requestType)) {
+      apiParams.headers['Content-Type'] = 'multipart/form-data';
+      apiParams.onUploadProgress = function (process) {
+        if (config.progress) { config.progress(process); }
+      };
     }
-  }
+    // 若外部传入axios配置，以外部传入为主
+    if (this.ajaxHeaders) { Object.assign(apiParams.headers, this.ajaxHeaders); }
+    for (var key in requestConf) {
+      if (Object.prototype.hasOwnProperty.call(requestConf, key)) {
+        apiParams[key] = requestConf[key];
+      }
+    }
 
-  var result = axios(apiParams);
-  result.then(function (res) {
-    handler._res(res.data, config.success, config.error, config.complete, config.requestComplete);
-  }).catch(handler._networkError(config.networkError, config.requestComplete));
+    var result = axios(apiParams);
+    result.then(function (res) {
+      this$1._res(res.data, config.success, config.error, config.complete, config.requestComplete);
+    }).catch(this._networkError(config.networkError, config.requestComplete));
 
-  return new Promise(function (resolve, reject) {
-    result.then(function (res) { return resolve(res.data); }).catch(function (err) { return reject(err); });
-  })
-}
+    return new Promise(function (resolve, reject) {
+      result.then(function (res) { return resolve(res.data); }).catch(function (err) { return reject(err); });
+    })
+  };
 
-/*
-  * request function params
-  * @param type 请求类型
-  * @param url 请求地址
-  * @param config 请求的配置
-  * @param requestConfig 请求器配置
-  * @param obj Request 类实例
-*/
+  return Request;
+}(Handler));
 
-var Request = function Request(apiConf, request, params, ajaxHeaders, debug, withCredentials) {
+var RequestCore = function RequestCore(apiConf, Request, params, ajaxHeaders, debug, withCredentials) {
   if ( debug === void 0 ) debug = false;
 
-  this._debug = debug;
-  this.withCredentials = withCredentials;
-  this.params = params;
-  this.ajaxHeaders = ajaxHeaders;
-  this.request = request;
+  this.Request = new Request(params, ajaxHeaders, debug, withCredentials);
   this._createMethods(apiConf, this);
 };
 
 // 为避免命名重复问题，内部方法设为静态方法
 // 生成实例的方法
-Request.prototype._createMethods = function _createMethods (apiConf, object) {
+RequestCore.prototype._createMethods = function _createMethods (apiConf, object) {
     var this$1 = this;
     if ( object === void 0 ) object = this;
 
@@ -241,13 +244,13 @@ Request.prototype._createMethods = function _createMethods (apiConf, object) {
 };
 
 // 绑定请求
-Request.prototype._createRequest = function _createRequest (obj, key, url, type) {
+RequestCore.prototype._createRequest = function _createRequest (obj, key, url, type) {
     var this$1 = this;
     if ( type === void 0 ) type = 'get';
 
   var requestMethod = function (method) {
     return function (config, requestConf) {
-      return this$1.request(method, url, config, requestConf, this$1);
+      return this$1.Request._requestProxy(method, url, config, requestConf, this$1);
     }
   };
   var types = [];
@@ -266,14 +269,14 @@ Request.prototype._createRequest = function _createRequest (obj, key, url, type)
 };
 
 var API = /*@__PURE__*/(function (RequestCore$$1) {
-  function API(apiConf, request$$1, params, ajaxHeaders, debug, withCredentials) {
+  function API(apiConf, Request$$1, params, ajaxHeaders, debug, withCredentials) {
     if ( debug === void 0 ) debug = false;
     if ( withCredentials === void 0 ) withCredentials = true;
 
-    if (typeof request$$1 !== 'function') {
-      request$$1 = request;
+    if (typeof Request$$1 !== 'function') {
+      Request$$1 = Request;
     }
-    RequestCore$$1.call(this, apiConf, request$$1, params, ajaxHeaders, debug, withCredentials);
+    RequestCore$$1.call(this, apiConf, Request$$1, params, ajaxHeaders, debug, withCredentials);
   }
 
   if ( RequestCore$$1 ) API.__proto__ = RequestCore$$1;
@@ -281,6 +284,6 @@ var API = /*@__PURE__*/(function (RequestCore$$1) {
   API.prototype.constructor = API;
 
   return API;
-}(Request));
+}(RequestCore));
 
 export default API;

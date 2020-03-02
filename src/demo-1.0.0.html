@@ -73,22 +73,13 @@
       // 1.生成实例
 
       /*
-      * new BzAxios(apiConf, request, params, ajaxHeaders, debug, withCredentials)
+      * new BzAxios(apiConf, Request, params, ajaxHeaders, debug, withCredentials)
       * config-接口请求方法的配置，可多层嵌套, 标识符请避开下划线_
-      * request 请求器，默认使用axios
+      * Request 请求器类，默认使用axios,传入自定义请求器需自行处理请求回调方式
       * params-拼接在所有接口url上的参数对象，可实例化后通过api.params赋值
       * ajaxHeaders-请求接口时的需传递header参数，可实例化后通过api.ajaxHeaders赋值
       * debug-开启debug, 默认false
       * withCredentials-是否跨域, 默认true,axios使用，taro无此参数
-      */
-
-      /*
-      * request 请求器函数参数
-      * @param type 请求类型
-      * @param url 请求地址
-      * @param config 请求的配置
-      * @param requestConfig 请求器配置
-      * @param obj Request 类实例
       */
 
       /*
@@ -110,7 +101,7 @@
           <span class="tips">// 模块内方法，通过api.app.methodName(...args)调用
           // type传入数组，需要分别调用methodName.get/methodName.post</span>
           methodName: {
-            type: ['GET','POST'], 
+            type: ['GET','POST'],
             url: 'http://api.office.bzdev.net/yunji/restful/pedometer/list.json',
           },
         },
@@ -161,7 +152,7 @@
 
       api.detail(); <span class="tips">// error</span>
 
-      api._defaultError = () => {
+      api.Request._defaultError = () => {
         return console.error(err, 222)。
       }
 
@@ -191,17 +182,17 @@
         <span class="tips">// _res请求成功后的处理器，_networkError网络异常处理器
         // 这样修改除progress其他回调都失效</span>
 
-        api._res = function(data) {
+        api.Request._res = function(data) {
           alert("_res已被修改")
           console.log(this._debug)
         }
-        api._networkError = function() {
+        api.Request._networkError = function() {
           return function(err) {
             console.log('出错了');
           }
         }
 
-        api.personal({ 
+        api.personal({
           <span class="tips">// 已无效</span>
           success: function(data) {
             alert('lalala~');
@@ -226,7 +217,7 @@
         })
       </code>
 
-      <a class="btn-box__a" href="javascript:" data-code="demo4">覆盖axiosConfig</a>
+      <a class="btn-box__a" href="javascript:" data-code="demo4">覆盖requestConfig</a>
       <code class="btn-box__code" id="demo4">
         <span class="tips">// 传入type 覆盖配置时的get
         // 若点过旁边的按钮，error无效</span>

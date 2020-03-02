@@ -3,7 +3,10 @@
  */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_defaultError", "_debug"] }] */
 
-export default class Handler {
+class Handler {
+  constructor(_debug = false) {
+    this._debug = _debug;
+  }
   _getUrlParams(url) {
     let href = url;
     const regExp = /(\w+)=(\w+)/ig;
@@ -104,3 +107,5 @@ export default class Handler {
     };
   }
 }
+
+export default Handler;

@@ -2,11 +2,11 @@ import taroRequest from './request/taro';
 import RequestCore from './module/core';
 
 class API extends RequestCore {
-  constructor(apiConf, request, params, ajaxHeaders, debug = false) {
-    if (typeof request !== 'function') {
-      request = taroRequest;
+  constructor(apiConf, Request, params, ajaxHeaders, debug = false) {
+    if (typeof Request !== 'function') {
+      Request = taroRequest;
     }
-    super(apiConf, request, params, ajaxHeaders, debug);
+    super(apiConf, Request, params, ajaxHeaders, debug);
   }
 }
 

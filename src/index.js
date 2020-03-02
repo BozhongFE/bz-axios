@@ -1,12 +1,12 @@
-import axiosRequest from './request/axios';
+import AxiosRequest from './request/axios';
 import RequestCore from './module/core';
 
 class API extends RequestCore {
-  constructor(apiConf, request, params, ajaxHeaders, debug = false, withCredentials = true) {
-    if (typeof request !== 'function') {
-      request = axiosRequest;
+  constructor(apiConf, Request, params, ajaxHeaders, debug = false, withCredentials = true) {
+    if (typeof Request !== 'function') {
+      Request = AxiosRequest;
     }
-    super(apiConf, request, params, ajaxHeaders, debug, withCredentials);
+    super(apiConf, Request, params, ajaxHeaders, debug, withCredentials);
   }
 }
 

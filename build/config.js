@@ -36,59 +36,6 @@ if (!exists('dist/')) {
 }
 
 const builds = {
-  /*
-  'dev': {
-    input: 'src/index.js',
-    format: 'umd',
-    moduleName: name,
-    output: path.join(modulePath, name + '-debug.js'),
-    plugins: [
-      resolve(),
-      commonjs()
-    ]
-  },
-  'prod': {
-    input: 'src/index.js',
-    format: 'umd',
-    moduleName: name,
-    output: path.join(modulePath, name + '.js'),
-    plugins: [
-      resolve(),
-      commonjs()
-    ]
-  },
-  'prod-core': {
-    input: 'src/core.js',
-    format: 'umd',
-    moduleName: name,
-    output: path.join(modulePath, name + '-core.js'),
-    plugins: [
-      resolve(),
-      commonjs()
-    ]
-  },
-  'prod-noDepend': {
-    input: 'src/index.js',
-    format: 'umd',
-    moduleName: name,
-    output: path.join(modulePath, name + '-nodep.js'),
-    hasExternal: true,
-  },
-  'prod-core-noDepend': {
-    input: 'src/core.js',
-    format: 'umd',
-    moduleName: name,
-    output: path.join(modulePath, name + '-core-nodep.js'),
-    hasExternal: true,
-  },
-  'dist-common': {
-    input: 'src/index.js',
-    format: 'umd',
-    moduleName: name,
-    output: path.join('dist/', name + '.umd.js'),
-    hasExternal: true,
-  },
-  */
   'dist-esm': {
     input: 'src/index.js',
     format: 'es',

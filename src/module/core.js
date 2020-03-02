@@ -1,19 +1,6 @@
-/*
-  * request function params
-  * @param type 请求类型
-  * @param url 请求地址
-  * @param config 请求的配置
-  * @param requestConfig 请求器配置
-  * @param obj Request 类实例
-*/
-
-class Request  {
-  constructor(apiConf, request, params, ajaxHeaders, debug = false, withCredentials) {
-    this._debug = debug;
-    this.withCredentials = withCredentials;
-    this.params = params;
-    this.ajaxHeaders = ajaxHeaders;
-    this.request = request;
+class RequestCore  {
+  constructor(apiConf, Request, params, ajaxHeaders, debug = false, withCredentials) {
+    this.Request = new Request(params, ajaxHeaders, debug, withCredentials);
     this._createMethods(apiConf, this);
   }
 
@@ -52,7 +39,7 @@ class Request  {
   _createRequest(obj, key, url, type = 'get') {
     const requestMethod = method => {
       return (config, requestConf) => {
-        return this.request(method, url, config, requestConf, this);
+        return this.Request._requestProxy(method, url, config, requestConf, this);
       }
     }
     const types = [];
@@ -72,4 +59,4 @@ class Request  {
 }
 
 
-export default Request;
+export default RequestCore;

@@ -1,26 +1,13 @@
-/*
-  * request function params
-  * @param type 请求类型
-  * @param url 请求地址
-  * @param config 请求的配置
-  * @param requestConfig 请求器配置
-  * @param obj Request 类实例
-*/
-
-var Request = function Request(apiConf, request, params, ajaxHeaders, debug, withCredentials) {
+var RequestCore = function RequestCore(apiConf, Request, params, ajaxHeaders, debug, withCredentials) {
   if ( debug === void 0 ) debug = false;
 
-  this._debug = debug;
-  this.withCredentials = withCredentials;
-  this.params = params;
-  this.ajaxHeaders = ajaxHeaders;
-  this.request = request;
+  this.Request = new Request(params, ajaxHeaders, debug, withCredentials);
   this._createMethods(apiConf, this);
 };
 
 // 为避免命名重复问题，内部方法设为静态方法
 // 生成实例的方法
-Request.prototype._createMethods = function _createMethods (apiConf, object) {
+RequestCore.prototype._createMethods = function _createMethods (apiConf, object) {
     var this$1 = this;
     if ( object === void 0 ) object = this;
 
@@ -55,13 +42,13 @@ Request.prototype._createMethods = function _createMethods (apiConf, object) {
 };
 
 // 绑定请求
-Request.prototype._createRequest = function _createRequest (obj, key, url, type) {
+RequestCore.prototype._createRequest = function _createRequest (obj, key, url, type) {
     var this$1 = this;
     if ( type === void 0 ) type = 'get';
 
   var requestMethod = function (method) {
     return function (config, requestConf) {
-      return this$1.request(method, url, config, requestConf, this$1);
+      return this$1.Request._requestProxy(method, url, config, requestConf, this$1);
     }
   };
   var types = [];
@@ -79,4 +66,4 @@ Request.prototype._createRequest = function _createRequest (obj, key, url, type)
   });
 };
 
-export default Request;
+export default RequestCore;
