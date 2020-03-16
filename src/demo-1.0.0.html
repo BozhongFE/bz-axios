@@ -148,6 +148,17 @@
       * }
       */</span>
 
+      <span class="tips">
+      // 4. 使用第三方请求器 - wx.request
+      // 声明Request类，拥有_requestProxy方法，请求回调Handler类需自行处理
+      </span>
+      class Request {
+        _requestProxy() {
+          wx.request(params)
+        }
+      }
+      var api = new BzAxios(apiConf, Request);
+
       <span class="tips">// ↓↓假设网络异常</span>
 
       api.detail(); <span class="tips">// error</span>

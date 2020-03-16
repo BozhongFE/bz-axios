@@ -2,8 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const buble = require('rollup-plugin-buble');
 const autoprefixer = require('autoprefixer');
-const resolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
 const postcss = require('rollup-plugin-postcss');
 const cssnano = require('cssnano');
 const config = require('../package.json');
@@ -36,6 +34,34 @@ if (!exists('dist/')) {
 }
 
 const builds = {
+  'dev': {
+    input: 'src/index.js',
+    format: 'umd',
+    moduleName: name,
+    output: path.join(modulePath, name + '-debug.js'),
+    hasExternal: true
+  },
+  'prod': {
+    input: 'src/index.js',
+    format: 'umd',
+    moduleName: name,
+    output: path.join(modulePath, name + '-.js'),
+    hasExternal: true
+  },
+  'prod-core': {
+    input: 'src/module/core.js',
+    format: 'umd',
+    moduleName: name,
+    output: path.join(modulePath, name + '-core.js'),
+    hasExternal: true
+  },
+  'prod-taro': {
+    input: 'src/index-taro.js',
+    format: 'umd',
+    moduleName: name,
+    output: path.join(modulePath, name + '-taro.js'),
+    hasExternal: true
+  },
   'dist-esm': {
     input: 'src/index.js',
     format: 'es',
