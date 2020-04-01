@@ -18,13 +18,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "es6-promise": "^4.2.4",
-    "qs": "^6.5.2",
-    "rollup": "^0.48.2",
-    "rollup-plugin-buble": "^0.19.2",
-    "rollup-plugin-commonjs": "^8.4.1",
-    "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-postcss": "^1.6.2",
-    "uglify-js": "^3.4.4"
+    "qs": "^6.5.2"
   },
   "license": "ISC",
   "devDependencies": {
@@ -38,6 +32,12 @@
     "webpack": "^4.12.1",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.4",
+    "rollup": "^0.48.2",
+    "rollup-plugin-buble": "^0.19.2",
+    "rollup-plugin-commonjs": "^8.4.1",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-postcss": "^1.6.2",
+    "uglify-js": "^3.4.4"
   }
 }
