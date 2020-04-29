@@ -87,7 +87,17 @@
       * 1.生成实例时配置多条不同type的请求
       * 2.生成实例时type配置数组，通过api.moduleName.methodName.typeName(..args)分别调用
       * 3.方法调用时传入config.type，会覆盖配置时设置的type，具体看下方调用
-      */</span>
+      */
+
+      /*
+      * 请求参数说明：
+      * 请求参数可由三个部分配置
+      * 1. new BzAxios(apiConf, Request, params, ...args) params参数
+      * 2. apiConf.url参数
+      * 3. apiConf.data参数
+      * 遇同名属性会覆盖，优先级按此排列由低至高
+      */
+    </span>
 
       var api = new BzAxios({
         <span class="tips">// 带有url字段则判断为方法, 通过api.personal(...args)调用</span>

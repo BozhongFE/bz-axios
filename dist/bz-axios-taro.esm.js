@@ -128,7 +128,7 @@ Handler.prototype._networkError = function _networkError (networkErrorCB, reques
 };
 
 var Request = /*@__PURE__*/(function (Handler$$1) {
-  function Request(params, ajaxHeaders,  _debug) {
+  function Request(params, ajaxHeaders, _debug) {
     if ( _debug === void 0 ) _debug = false;
 
     Handler$$1.call(this, _debug);
@@ -147,39 +147,49 @@ var Request = /*@__PURE__*/(function (Handler$$1) {
 
     if (!url) { return false; }
 
-  // 处理params参数
-  var urlParams = this._getUrlParams(url);
-  var apiData = Object.assign(urlParams, this.params, config.data);
-  var requestHeader = {
-    'content-type': /form/gi.test(type) ? 'application/x-www-form-urlencoded' : 'application/json'
-  };
-  var paramsIndex = url.indexOf('?');
-  var href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
-  var requestType = config.type || type;
-  var apiParams = {
-    url: href,
-    method: /form/gi.test(requestType) ? 'POST' : requestType.toUpperCase(),
-    header: requestHeader,
-    data: apiData,
-    dataType: config.dataType || 'json'
-  };
+    // 处理params参数
+    var urlParams = this._getUrlParams(url);
+    var apiData = Object.assign(this.params, urlParams, config.data);
+    var requestHeader = {
+      'content-type': /form/gi.test(type)
+        ? 'application/x-www-form-urlencoded'
+        : 'application/json',
+    };
+    var paramsIndex = url.indexOf('?');
+    var href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
+    var requestType = config.type || type;
+    var apiParams = {
+      url: href,
+      method: /form/gi.test(requestType) ? 'POST' : requestType.toUpperCase(),
+      header: requestHeader,
+      data: apiData,
+      dataType: config.dataType || 'json',
+    };
 
-  // 若外部传入axios配置，以外部传入为主
-  if (this.ajaxHeaders) { Object.assign(apiParams.header, this.ajaxHeaders); }
-  for (var key in requestConf) {
-    if (Object.prototype.hasOwnProperty.call(requestConf, key)) {
-      apiParams[key] = requestConf[key];
+    // 若外部传入axios配置，以外部传入为主
+    if (this.ajaxHeaders) { Object.assign(apiParams.header, this.ajaxHeaders); }
+    for (var key in requestConf) {
+      if (Object.prototype.hasOwnProperty.call(requestConf, key)) {
+        apiParams[key] = requestConf[key];
+      }
     }
-  }
 
-  var result = Taro.request(apiParams);
-  result.then(function (res) {
-    this$1._res(res.data, config.success, config.error, config.complete, config.requestComplete);
-  }).catch(this._networkError(config.networkError, config.requestComplete));
+    var result = Taro.request(apiParams);
+    result
+      .then(function (res) {
+        this$1._res(
+          res.data,
+          config.success,
+          config.error,
+          config.complete,
+          config.requestComplete
+        );
+      })
+      .catch(this._networkError(config.networkError, config.requestComplete));
 
-  return new Promise(function (resolve, reject) {
-    result.then(function (res) { return resolve(res.data); }).catch(function (err) { return reject(err); });
-  })
+    return new Promise(function (resolve, reject) {
+      result.then(function (res) { return resolve(res.data); }).catch(function (err) { return reject(err); });
+    });
   };
 
   return Request;
