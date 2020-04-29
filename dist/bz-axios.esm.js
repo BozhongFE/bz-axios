@@ -129,7 +129,7 @@ Handler.prototype._networkError = function _networkError (networkErrorCB, reques
 };
 
 var Request = /*@__PURE__*/(function (Handler$$1) {
-  function Request(params, ajaxHeaders,  _debug, withCredentials) {
+  function Request(params, ajaxHeaders, _debug, withCredentials) {
     if ( _debug === void 0 ) _debug = false;
     if ( withCredentials === void 0 ) withCredentials = true;
 
@@ -156,19 +156,17 @@ var Request = /*@__PURE__*/(function (Handler$$1) {
     var apiDataKey = isParamsOption ? 'params' : 'data';
     // 处理params参数
     var urlParams = this._getUrlParams(url);
-    var requestParams = isParamsOption ?
-      Object.assign(urlParams, this.params, config.data) : this.params;
-
+    var requestParams = Object.assign(urlParams, this.params, config.data);
     var paramsIndex = url.indexOf('?');
     var href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
-    var apiData = /post|put|delete/gi.test(apiType) ?
-      qs.stringify(config.data) : config.data;
 
     var apiParams = {
       method: apiType,
       url: href
     };
-    apiParams[apiDataKey] = isParamsOption ? requestParams : apiData;
+    apiParams[apiDataKey] = isParamsOption
+        ? requestParams
+        : qs.stringify(requestParams);
     apiParams.headers = {};
     // 处理请求头
     if (/put|delete/gi.test(requestType)) {
@@ -188,13 +186,21 @@ var Request = /*@__PURE__*/(function (Handler$$1) {
     }
 
     var result = axios(apiParams);
-    result.then(function (res) {
-      this$1._res(res.data, config.success, config.error, config.complete, config.requestComplete);
-    }).catch(this._networkError(config.networkError, config.requestComplete));
+    result
+      .then(function (res) {
+        this$1._res(
+          res.data,
+          config.success,
+          config.error,
+          config.complete,
+          config.requestComplete
+        );
+      })
+      .catch(this._networkError(config.networkError, config.requestComplete));
 
     return new Promise(function (resolve, reject) {
       result.then(function (res) { return resolve(res.data); }).catch(function (err) { return reject(err); });
-    })
+    });
   };
 
   return Request;

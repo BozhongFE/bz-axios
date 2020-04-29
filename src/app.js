@@ -1,20 +1,31 @@
-
 // import BzAxios from '../dist/bz-axios.umd.js';
 import BzAxios from './index';
 
-const api = new BzAxios({
-  personal: {
-    type: 'GET',
-    url: 'https://huodong.office.bzdev.net/restful/activity/crazy/home.json?story_type=0',
-  },
-  detail: 'https://huodong.office.bzdev.net/restful/yunji/product/goods/detail.json?id=2',
-  app: {
-    methodName: {
-      type: ['get', 'post'],
-      url: 'https://api.office.bzdev.net/yunji/restful/pedometer/list.json',
+const api = new BzAxios(
+  {
+    personal: {
+      type: 'GET',
+      url:
+        'https://huodong.office.bzdev.net/restful/activity/crazy/home.json?story_type=0',
     },
-  }
-}, undefined, {a: 1});
+    cash: {
+      type: 'POST',
+      url:
+        'https://huodong.office.bzdev.net/restful/activity/crazy/cash.json?money=5',
+    },
+    detail:
+      'https://huodong.office.bzdev.net/restful/yunji/product/goods/detail.json?id=2',
+    app: {
+      methodName: {
+        type: ['get', 'post'],
+        url: 'https://api.office.bzdev.net/yunji/restful/pedometer/list.json',
+      },
+    },
+  },
+  undefined,
+  { a: 1 }
+);
+
 // 挂到全局方便html调用
 window.api = api;
 document.querySelector('.btn-box').addEventListener('click', (e) => {

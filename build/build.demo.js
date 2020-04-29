@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -23,30 +22,35 @@ const version = process.env.npm_package_version;
 //   modulePath = path.join(modulePath, version);
 //   if (!exists(modulePath)) fs.mkdirSync(modulePath);
 // }
-webpack(Object.assign(webpackBaseConfig, {
-  mode: 'development',
-  entry: {
-    main: './src/app.js',
-  },
-  output: {
-    // path: path.resolve(modulePath, './demo'),
-    path: path.resolve(__dirname, '../dist/demo'),
-  },
-  plugins: (webpackBaseConfig.plugins || []).concat([
-    new htmlWebpackPlugin({
-      filename: 'index.html',
-      template: './src/demo.html',
-      chunks: ['main'],
-      version,
-    }),
-  ])
-}), (err, stats) => {
-  if (err) throw err;
-  process.stdout.write(stats.toString({
-    colors: true,
-    modules: false,
-    children: false,
-    chunks: false,
-    chunkModules: false,
-  }) + '\n\n');
-});
+webpack(
+  Object.assign(webpackBaseConfig, {
+    mode: 'development',
+    entry: {
+      main: './src/app.js',
+    },
+    output: {
+      // path: path.resolve(modulePath, './demo'),
+      path: path.resolve(__dirname, '../dist/demo'),
+    },
+    plugins: (webpackBaseConfig.plugins || []).concat([
+      new htmlWebpackPlugin({
+        filename: 'index.html',
+        template: './src/demo-1.0.0.html',
+        chunks: ['main'],
+        version,
+      }),
+    ]),
+  }),
+  (err, stats) => {
+    if (err) throw err;
+    process.stdout.write(
+      stats.toString({
+        colors: true,
+        modules: false,
+        children: false,
+        chunks: false,
+        chunkModules: false,
+      }) + '\n\n'
+    );
+  }
+);
