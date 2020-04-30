@@ -1,5 +1,12 @@
-class RequestCore  {
-  constructor(apiConf, Request, params, ajaxHeaders, debug = false, withCredentials) {
+class RequestCore {
+  constructor(
+    apiConf,
+    Request,
+    params = {},
+    ajaxHeaders = {},
+    debug = false,
+    withCredentials
+  ) {
     this.Request = new Request(params, ajaxHeaders, debug, withCredentials);
     this._createMethods(apiConf, this);
   }
@@ -37,26 +44,31 @@ class RequestCore  {
 
   // 绑定请求
   _createRequest(obj, key, url, type = 'get') {
-    const requestMethod = method => {
+    const requestMethod = (method) => {
       return (config, requestConf) => {
-        return this.Request._requestProxy(method, url, config, requestConf, this);
-      }
-    }
+        return this.Request._requestProxy(
+          method,
+          url,
+          config,
+          requestConf,
+          this
+        );
+      };
+    };
     const types = [];
     if (Object.prototype.toString.call(type) === '[object Array]') {
       types.push(...type);
     } else {
       types.push(type);
     }
-    const isHadGetMethod = types.some(method => /get/gi.test(method));
+    const isHadGetMethod = types.some((method) => /get/gi.test(method));
     if (isHadGetMethod) obj[key] = requestMethod('get');
     if (!isHadGetMethod && !obj[key]) obj[key] = {};
 
-    types.forEach(method => {
+    types.forEach((method) => {
       obj[key][method.toUpperCase()] = requestMethod(method);
-    })
+    });
   }
 }
-
 
 export default RequestCore;

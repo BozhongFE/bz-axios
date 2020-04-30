@@ -13,16 +13,19 @@ var Handler = function Handler(_debug) {
 };
 Handler.prototype._getUrlParams = function _getUrlParams (url) {
   var href = url;
-  var regExp = /(\w+)=(\w+)/ig;
   var pos = href.indexOf('?');
   var params = {};
 
   if (pos !== -1) {
-    href.substr(pos);
-    href.replace(regExp, function (match, matchExp1, matchExp2) {
-      params[matchExp1] = matchExp2;
+    href = href.substr(pos + 1);
+    href.split('&').forEach(function (item) {
+      var data = item.split('=');
+      params[data[0]] = data[1];
     });
+
+    return params;
   }
+
   return params;
 };
 // 拼接url
@@ -37,8 +40,13 @@ Handler.prototype._setUrlParam = function _setUrlParam (url, obj) {
   var isHadParams = pos !== -1;
   var href = isHadParams ? url.substring(0, pos) : url;
 
-  return href + '?' +
-    Object.keys(params).map(function (key) { return (key + "=" + (obj[key])); }).join('&');
+  return (
+    href +
+    '?' +
+    Object.keys(params)
+      .map(function (key) { return (key + "=" + (obj[key])); })
+      .join('&')
+  );
 };
 
 // 同步处理事件分流器，一般用于actions
@@ -71,13 +79,17 @@ Handler.prototype._shuntAsync = function _shuntAsync () {
 
     var index = 0;
     var loop = function () {
-      if (Object.prototype.toString.call(args[index]) === '[object Function]') {
-        args[index].apply(args, resArgs.concat(function () {
-          index += 1;
-          if (index < args.length) {
-            loop();
-          }
-        }));
+      if (
+        Object.prototype.toString.call(args[index]) === '[object Function]'
+      ) {
+        args[index].apply(
+          args, resArgs.concat(function () {
+            index += 1;
+            if (index < args.length) {
+              loop();
+            }
+          })
+        );
       }
     };
     loop();
@@ -106,17 +118,21 @@ Handler.prototype._res = function _res (data, successCB, errorCB, completeCB, re
 Handler.prototype._defaultError = function _defaultError (err, type) {
     if ( type === void 0 ) type = 'networkError';
 
-  if (type === 'data') { return console.log(("格式异常：" + (err && typeof err === 'string' ? err : err.error_message))); }
+  if (type === 'data')
+    { return console.log(
+      ("格式异常：" + (err && typeof err === 'string' ? err : err.error_message))
+    ); }
   return console.error(err);
 };
 
 // 网络异常处理
 Handler.prototype._networkError = function _networkError (networkErrorCB, requestCompleteCB) {
-  var self = this;
-  if (self._debug && (networkErrorCB || requestCompleteCB)) {
-    self._debug = false;
+    var this$1 = this;
+
+  if (this._debug && (networkErrorCB || requestCompleteCB)) {
+    this._debug = false;
     return function (err) {
-      self._defaultError(err);
+      this$1._defaultError(err);
       if (networkErrorCB) { networkErrorCB(err); }
       if (requestCompleteCB) { requestCompleteCB(err); }
     };
@@ -124,7 +140,7 @@ Handler.prototype._networkError = function _networkError (networkErrorCB, reques
   return function (err) {
     if (requestCompleteCB) { requestCompleteCB(err); }
     if (networkErrorCB) { return networkErrorCB(err); }
-    return self._defaultError(err);
+    return this$1._defaultError(err);
   };
 };
 
@@ -206,7 +222,16 @@ var Request = /*@__PURE__*/(function (Handler$$1) {
   return Request;
 }(Handler));
 
-var RequestCore = function RequestCore(apiConf, Request, params, ajaxHeaders, debug, withCredentials) {
+var RequestCore = function RequestCore(
+  apiConf,
+  Request,
+  params,
+  ajaxHeaders,
+  debug,
+  withCredentials
+) {
+  if ( params === void 0 ) params = {};
+  if ( ajaxHeaders === void 0 ) ajaxHeaders = {};
   if ( debug === void 0 ) debug = false;
 
   this.Request = new Request(params, ajaxHeaders, debug, withCredentials);
@@ -256,8 +281,14 @@ RequestCore.prototype._createRequest = function _createRequest (obj, key, url, t
 
   var requestMethod = function (method) {
     return function (config, requestConf) {
-      return this$1.Request._requestProxy(method, url, config, requestConf, this$1);
-    }
+      return this$1.Request._requestProxy(
+        method,
+        url,
+        config,
+        requestConf,
+        this$1
+      );
+    };
   };
   var types = [];
   if (Object.prototype.toString.call(type) === '[object Array]') {

@@ -1,4 +1,13 @@
-var RequestCore = function RequestCore(apiConf, Request, params, ajaxHeaders, debug, withCredentials) {
+var RequestCore = function RequestCore(
+  apiConf,
+  Request,
+  params,
+  ajaxHeaders,
+  debug,
+  withCredentials
+) {
+  if ( params === void 0 ) params = {};
+  if ( ajaxHeaders === void 0 ) ajaxHeaders = {};
   if ( debug === void 0 ) debug = false;
 
   this.Request = new Request(params, ajaxHeaders, debug, withCredentials);
@@ -48,8 +57,14 @@ RequestCore.prototype._createRequest = function _createRequest (obj, key, url, t
 
   var requestMethod = function (method) {
     return function (config, requestConf) {
-      return this$1.Request._requestProxy(method, url, config, requestConf, this$1);
-    }
+      return this$1.Request._requestProxy(
+        method,
+        url,
+        config,
+        requestConf,
+        this$1
+      );
+    };
   };
   var types = [];
   if (Object.prototype.toString.call(type) === '[object Array]') {

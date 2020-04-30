@@ -9,16 +9,19 @@ class Handler {
   }
   _getUrlParams(url) {
     let href = url;
-    const regExp = /(\w+)=(\w+)/ig;
     const pos = href.indexOf('?');
     const params = {};
 
     if (pos !== -1) {
-      href.substr(pos);
-      href.replace(regExp, function (match, matchExp1, matchExp2) {
-        params[matchExp1] = matchExp2;
-      })
+      href = href.substr(pos + 1);
+      href.split('&').forEach((item) => {
+        const data = item.split('=');
+        params[data[0]] = data[1];
+      });
+
+      return params;
     }
+
     return params;
   }
   // 拼接url
@@ -31,8 +34,13 @@ class Handler {
     const isHadParams = pos !== -1;
     const href = isHadParams ? url.substring(0, pos) : url;
 
-    return href + '?' +
-      Object.keys(params).map(key => `${key}=${obj[key]}`).join('&');
+    return (
+      href +
+      '?' +
+      Object.keys(params)
+        .map((key) => `${key}=${obj[key]}`)
+        .join('&')
+    );
   }
 
   // 同步处理事件分流器，一般用于actions
@@ -52,13 +60,17 @@ class Handler {
     return (...resArgs) => {
       let index = 0;
       const loop = () => {
-        if (Object.prototype.toString.call(args[index]) === '[object Function]') {
-          args[index](...resArgs.concat(() => {
-            index += 1;
-            if (index < args.length) {
-              loop();
-            }
-          }));
+        if (
+          Object.prototype.toString.call(args[index]) === '[object Function]'
+        ) {
+          args[index](
+            ...resArgs.concat(() => {
+              index += 1;
+              if (index < args.length) {
+                loop();
+              }
+            })
+          );
         }
       };
       loop();
@@ -85,17 +97,19 @@ class Handler {
   // 默认网络异常处理方法
   // eslint-disable-next-line class-methods-use-this
   _defaultError(err, type = 'networkError') {
-    if (type === 'data') return console.log(`格式异常：${err && typeof err === 'string' ? err : err.error_message}`);
+    if (type === 'data')
+      return console.log(
+        `格式异常：${err && typeof err === 'string' ? err : err.error_message}`
+      );
     return console.error(err);
   }
 
   // 网络异常处理
   _networkError(networkErrorCB, requestCompleteCB) {
-    const self = this;
-    if (self._debug && (networkErrorCB || requestCompleteCB)) {
-      self._debug = false;
+    if (this._debug && (networkErrorCB || requestCompleteCB)) {
+      this._debug = false;
       return (err) => {
-        self._defaultError(err);
+        this._defaultError(err);
         if (networkErrorCB) networkErrorCB(err);
         if (requestCompleteCB) requestCompleteCB(err);
       };
@@ -103,7 +117,7 @@ class Handler {
     return (err) => {
       if (requestCompleteCB) requestCompleteCB(err);
       if (networkErrorCB) return networkErrorCB(err);
-      return self._defaultError(err);
+      return this._defaultError(err);
     };
   }
 }
