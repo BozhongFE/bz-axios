@@ -18,7 +18,12 @@ class Request extends Handler {
     const apiDataKey = isParamsOption ? 'params' : 'data';
     // 处理params参数
     const urlParams = this._getUrlParams(url);
-    const requestParams = Object.assign(this.params, urlParams, config.data);
+    const requestParams = Object.assign(
+      {},
+      this.params,
+      urlParams,
+      config.data
+    );
     const paramsIndex = url.indexOf('?');
     const href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
 

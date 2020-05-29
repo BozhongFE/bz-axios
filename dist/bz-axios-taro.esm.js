@@ -165,7 +165,7 @@ var Request = /*@__PURE__*/(function (Handler$$1) {
 
     // 处理params参数
     var urlParams = this._getUrlParams(url);
-    var apiData = Object.assign(this.params, urlParams, config.data);
+    var apiData = Object.assign({}, this.params, urlParams, config.data);
     var requestHeader = {
       'content-type': /form/gi.test(type)
         ? 'application/x-www-form-urlencoded'

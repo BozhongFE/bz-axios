@@ -12,7 +12,7 @@ class Request extends Handler {
 
     // 处理params参数
     const urlParams = this._getUrlParams(url);
-    const apiData = Object.assign(this.params, urlParams, config.data);
+    const apiData = Object.assign({}, this.params, urlParams, config.data);
     const requestHeader = {
       'content-type': /form/gi.test(type)
         ? 'application/x-www-form-urlencoded'

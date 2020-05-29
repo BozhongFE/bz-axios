@@ -172,7 +172,12 @@ var Request = /*@__PURE__*/(function (Handler$$1) {
     var apiDataKey = isParamsOption ? 'params' : 'data';
     // 处理params参数
     var urlParams = this._getUrlParams(url);
-    var requestParams = Object.assign(this.params, urlParams, config.data);
+    var requestParams = Object.assign(
+      {},
+      this.params,
+      urlParams,
+      config.data
+    );
     var paramsIndex = url.indexOf('?');
     var href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
 
