@@ -17,20 +17,11 @@ class Request extends Handler {
     const isParamsOption = !/post|put|delete/gi.test(apiType);
     const apiDataKey = isParamsOption ? 'params' : 'data';
     // 处理params参数
-    const urlParams = this._getUrlParams(url);
-    const requestParams = Object.assign(
-      {},
-      this.params,
-      urlParams,
-      config.data
-    );
-    const paramsIndex = url.indexOf('?');
-    const href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
+    const requestParams = Object.assign({}, this.params, config.data);
 
     const apiParams = {
       method: apiType,
-      url: href,
-      // [apiDataKey]: isParamsOption ? requestParams : apiData,
+      url,
       [apiDataKey]: isParamsOption
         ? requestParams
         : qs.stringify(requestParams),

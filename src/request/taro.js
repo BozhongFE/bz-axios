@@ -11,18 +11,16 @@ class Request extends Handler {
     if (!url) return false;
 
     // 处理params参数
-    const urlParams = this._getUrlParams(url);
-    const apiData = Object.assign({}, this.params, urlParams, config.data);
+    const apiData = Object.assign({}, this.params, config.data);
     const requestHeader = {
       'content-type': /form/gi.test(type)
         ? 'application/x-www-form-urlencoded'
         : 'application/json',
     };
-    const paramsIndex = url.indexOf('?');
-    const href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
+
     const requestType = config.type || type;
     const apiParams = {
-      url: href,
+      url,
       method: /form/gi.test(requestType) ? 'POST' : requestType.toUpperCase(),
       header: requestHeader,
       data: apiData,

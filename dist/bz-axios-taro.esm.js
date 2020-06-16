@@ -164,18 +164,16 @@ var Request = /*@__PURE__*/(function (Handler$$1) {
     if (!url) { return false; }
 
     // 处理params参数
-    var urlParams = this._getUrlParams(url);
-    var apiData = Object.assign({}, this.params, urlParams, config.data);
+    var apiData = Object.assign({}, this.params, config.data);
     var requestHeader = {
       'content-type': /form/gi.test(type)
         ? 'application/x-www-form-urlencoded'
         : 'application/json',
     };
-    var paramsIndex = url.indexOf('?');
-    var href = paramsIndex > -1 ? url.substring(0, paramsIndex) : url;
+
     var requestType = config.type || type;
     var apiParams = {
-      url: href,
+      url: url,
       method: /form/gi.test(requestType) ? 'POST' : requestType.toUpperCase(),
       header: requestHeader,
       data: apiData,

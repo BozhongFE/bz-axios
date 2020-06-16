@@ -34,33 +34,33 @@ if (!exists('dist/')) {
 }
 
 const builds = {
-  'dev': {
+  dev: {
     input: 'src/index.js',
     format: 'umd',
     moduleName: name,
     output: path.join(modulePath, name + '-debug.js'),
-    hasExternal: true
+    hasExternal: true,
   },
-  'prod': {
+  prod: {
     input: 'src/index.js',
     format: 'umd',
     moduleName: name,
     output: path.join(modulePath, name + '-.js'),
-    hasExternal: true
+    hasExternal: true,
   },
   'prod-core': {
     input: 'src/module/core.js',
     format: 'umd',
     moduleName: name,
     output: path.join(modulePath, name + '-core.js'),
-    hasExternal: true
+    hasExternal: true,
   },
   'prod-taro': {
     input: 'src/index-taro.js',
     format: 'umd',
     moduleName: name,
     output: path.join(modulePath, name + '-taro.js'),
-    hasExternal: true
+    hasExternal: true,
   },
   'dist-esm': {
     input: 'src/index.js',
@@ -98,7 +98,9 @@ function getConfig(opts) {
     plugins: [
       postcss({
         plugins: [
-          autoprefixer({ browsers: ['iOS >= 8', 'Android >= 4.4', 'not ie <= 8'] }),
+          autoprefixer({
+            browsers: ['iOS >= 8', 'Android >= 4.4', 'not ie <= 8'],
+          }),
           cssnano(),
         ],
       }),
@@ -107,12 +109,7 @@ function getConfig(opts) {
   };
 
   if (opts.hasExternal) {
-    theConfig.external = [
-      'object-assign',
-      'promise-polyfill',
-      'axios',
-      'qs',
-    ];
+    theConfig.external = ['object-assign', 'promise-polyfill', 'axios', 'qs'];
     theConfig.output.globals = {
       'object-assign': 'ObjectAssign',
       'promise-polyfill': 'Promise',
@@ -122,4 +119,5 @@ function getConfig(opts) {
   return theConfig;
 }
 
-exports.getAllBuilds = () => Object.keys(builds).map(name => getConfig(builds[name]));
+exports.getAllBuilds = () =>
+  Object.keys(builds).map((name) => getConfig(builds[name]));
