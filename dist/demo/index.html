@@ -59,12 +59,12 @@
   <div id="app">
     <pre class="code-box"><code>
       <span class="tips">//------ npm安装 -------</span>
-      npm install https://github.com/BozhongFE/bz-axios#v1.0.5
+      npm install https://github.com/BozhongFE/bz-axios#v2.0.0
 
       import BzAxios from 'bz-axios';
       ...
       <!-- <span class="tips">//------ requirejs引入 -------</span>
-      require(['mod/bz-axios/1.0.5'], function(BzAxios) {
+      require(['mod/bz-axios/2.0.0'], function(BzAxios) {
         ...
       } -->
 
@@ -73,13 +73,15 @@
       // 1.生成实例
 
       /*
-      * new BzAxios(apiConf, Request, params, ajaxHeaders, debug, withCredentials)
-      * config-接口请求方法的配置，可多层嵌套, 标识符请避开下划线_
-      * Request 请求器类，默认使用axios,传入自定义请求器需自行处理请求回调方式
+      * new BzAxios(apiConfig, params, ajaxHeaders, requestor, debug, withCredentials)
+      * apiConfig-接口请求方法的配置，可多层嵌套, 标识符请避开下划线_
       * params-拼接在所有接口url上的参数对象，可实例化后通过api.params赋值
       * ajaxHeaders-请求接口时的需传递header参数，可实例化后通过api.ajaxHeaders赋值
+      * requestor 请求器，('axios' | 'taro' | typeof class)默认使用axios,
+                  传入自定义请求器需自行处理请求回调方式
       * debug-开启debug, 默认false
       * withCredentials-是否跨域, 默认true,axios使用，taro无此参数
+      * 具体使用类型请看类型声明文件types.ts
       */
 
       /*
@@ -92,10 +94,9 @@
       /*
       * 请求参数说明：
       * 请求参数可由三个部分配置
-      * 1. new BzAxios(apiConf, Request, params, ...args) params参数
-      * 2. apiConf.url参数
-      * 3. apiConf.data参数
-      * 遇同名属性会覆盖，优先级按此排列由低至高
+      * 1. new BzAxios(apiConfig, params, ...args) params参数
+      * 2. apiConf.data参数
+      * 遇同名属性会覆盖，优先级按此排列由低至高,url参数不做处理，保留在url上
       */
     </span>
 
@@ -120,7 +121,7 @@
       <span class="tips">// 2.调用
 
       /*
-      * api.moduleName.fn(config, requestConf)
+      * api.moduleName.fn(config, requestorConfig)
       * 参数全非必填
       * config {
       *   type, // 请求方法，传入会覆盖配置时定义的type
@@ -132,12 +133,14 @@
       *   requestComplete(){}, // 请求完成回调
       *   progress(){}, // 上传进度回调，仅type为form时有用,axios使用，taro无此参数
       * }
-      * requestConf {} 请求器配置，模块内有默认配置，特殊情况可直接传入覆盖，具体参数看axios和taro官方文档
+      * requestorConfig {} 请求器配置，模块内有默认配置，特殊情况可直接传入覆盖，具体参数看axios和taro官方文档
       */
       </span>
       <span class="tips">// 支持async/await 调用</span>
       ;(async function() {
-        const data = await api.detail();
+        try {
+          const data = await api.detail();
+        } catch(err) {}
       })();
 
       <span class="tips">// GET请求可使用如下两种方式调用</span>
@@ -146,6 +149,9 @@
 
       <span class="tips">// 其他请求必须使用指定的方法名调用</span>
       api.app.methodName.POST();
+
+      <span class="tips">// 由于是动态添加的方法，在ts按如下使用</span>
+      api['app']['methodName'].POST()
 
       <span class="tips">// 3.修改默认方法
 
@@ -159,11 +165,11 @@
       */</span>
 
       <span class="tips">
-      // 4. 使用第三方请求器 - wx.request
+      // 4. 使用第三方请求器 - 例 wx.request
       // 声明Request类，拥有_requestProxy方法，请求回调Handler类需自行处理
       </span>
       class Request {
-        _requestProxy() {
+        _requestProxy(url, type, config, requestorConfig) {
           wx.request(params)
         }
       }
@@ -173,7 +179,7 @@
 
       api.detail(); <span class="tips">// error</span>
 
-      api.Request._defaultError = () => {
+      api['_defaultError'] = () => {
         return console.error(err, 222)。
       }
 

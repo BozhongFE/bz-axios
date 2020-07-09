@@ -1,10 +1,7 @@
-
 const fs = require('fs');
 const path = require('path');
-const webpack = require('webpack');
-const webpackBaseConfig = require('./webpack.conf.js');
+const { terser } = require('rollup-plugin-terser');
 
-// 判断目标目录路径等
 const exists = fs.existsSync;
 const name = process.env.npm_package_name;
 const version = process.env.npm_package_version;
@@ -23,43 +20,65 @@ if (typeof modulePath === 'undefined') {
   if (!exists(modulePath)) fs.mkdirSync(modulePath);
 }
 
-Object.assign(webpackBaseConfig, {
-  entry: {
-    index: './src/api/index.js',
+const getConfig = require('./config');
+const resolveFile = function (filePath) {
+  return path.join(filePath);
+};
+
+const buildConfigInfo = {
+  'axios-debug': {
+    input: resolveFile('src/index.ts'),
+    output: {
+      file: resolveFile(`${modulePath}/${name}-debug.js`),
+      format: 'es',
+    },
   },
-  output: {
-    path: path.resolve(modulePath),
-    filename: '[name].js',
-    libraryTarget: 'umd',
-    libraryExport: 'default',
+  'taro-debug': {
+    input: resolveFile('src/index-taro.ts'),
+    output: {
+      file: resolveFile(`${modulePath}/${name}-taro-debug.js`),
+      format: 'es',
+    },
   },
-  // externals: ['axios', 'qs', 'es6-promise'],
-});
+  core: {
+    input: resolveFile('src/module/core.ts'),
+    output: {
+      file: resolveFile(`${modulePath}/${name}-core.js`),
+      format: 'es',
+    },
+    plugins: [terser()],
+  },
+  handler: {
+    input: resolveFile('src/module/handler.ts'),
+    output: {
+      file: resolveFile(`${modulePath}/${name}-handler.js`),
+      format: 'es',
+    },
+    plugins: [terser()],
+  },
+  axios: {
+    input: resolveFile('src/index.ts'),
+    output: {
+      file: resolveFile(`${modulePath}/${name}.js`),
+      format: 'es',
+    },
+    plugins: [terser()],
+  },
+  taro: {
+    input: resolveFile('src/index-taro.ts'),
+    output: {
+      file: resolveFile(`${modulePath}/${name}-taro.js`),
+      format: 'es',
+    },
+    plugins: [terser()],
+  },
+};
 
-webpack(Object.assign(webpackBaseConfig, {
-  mode: 'production',
-}), (err, stats) => {
-  if (err) throw err;
-  process.stdout.write(stats.toString({
-    colors: true,
-    modules: false,
-    children: false,
-    chunks: false,
-    chunkModules: false,
-  }) + '\n\n');
-});
-
-webpackBaseConfig.output.filename = '[name]-debug.js';
-
-webpack(Object.assign(webpackBaseConfig, {
-  mode: 'development',
-}), (err, stats) => {
-  if (err) throw err;
-  process.stdout.write(stats.toString({
-    colors: true,
-    modules: false,
-    children: false,
-    chunks: false,
-    chunkModules: false,
-  }) + '\n\n');
-});
+const buildConfig = Object.keys(buildConfigInfo).map((name) =>
+  getConfig(
+    Object.assign({}, buildConfigInfo[name], {
+      plugins: [...(buildConfigInfo[name].plugins || [])],
+    })
+  )
+);
+module.exports = buildConfig;

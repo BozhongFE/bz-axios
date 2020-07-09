@@ -1,0 +1,16 @@
+declare type Data = string | number | undefined | null | boolean | object | symbol;
+declare function isArray(data: Data): data is any[];
+declare function isBoolean(data: Data): data is boolean;
+declare function isNull(data: Data): data is null;
+declare function isNumber(data: Data): data is number;
+declare function isString(data: Data): data is string;
+declare function isUndefined(data: Data): data is undefined;
+declare function isSymbol(data: Data): data is symbol;
+declare function isObject(data: Data): data is Object;
+declare function isRegExp(data: Data): data is RegExp;
+declare function isDate(data: Data): data is Date;
+declare function isFunction(data: Data): data is Function;
+declare function isError(data: Data): data is Error;
+declare const isNullOrUndefined: (data: Data) => boolean;
+declare const isPrimitive: (data: Data) => boolean;
+export { isArray, isBoolean, isNull, isNumber, isString, isUndefined, isSymbol, isObject, isRegExp, isDate, isFunction, isError, isNullOrUndefined, isPrimitive, };
