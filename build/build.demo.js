@@ -7,10 +7,10 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 const version = process.env.npm_package_version;
 
 webpack(
-  Object.assign(webpackBaseConfig, {
+  Object.assign({
     mode: 'development',
     entry: {
-      main: './src/app.ts',
+      main: './es/app.js',
     },
     output: {
       path: path.resolve(__dirname, '../dist/demo'),

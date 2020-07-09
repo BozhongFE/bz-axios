@@ -1,4 +1,3 @@
-const rollup = require('rollup');
 const path = require('path');
 const { terser } = require('rollup-plugin-terser');
 

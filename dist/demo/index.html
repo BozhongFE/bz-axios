@@ -77,8 +77,7 @@
       * apiConfig-接口请求方法的配置，可多层嵌套, 标识符请避开下划线_
       * params-拼接在所有接口url上的参数对象，可实例化后通过api.params赋值
       * ajaxHeaders-请求接口时的需传递header参数，可实例化后通过api.ajaxHeaders赋值
-      * requestor 请求器，('axios' | 'taro' | typeof class)默认使用axios,
-                  传入自定义请求器需自行处理请求回调方式
+      * requestor-自定义请求器，需自行处理请求回调方式，axios或taro无此参数
       * debug-开启debug, 默认false
       * withCredentials-是否跨域, 默认true,axios使用，taro无此参数
       * 具体使用类型请看类型声明文件types.ts
