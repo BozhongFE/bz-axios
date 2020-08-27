@@ -14,7 +14,7 @@ export type ApiConfigItem = {
 export type ApiConfigValue = {
   [key: string]: ApiConfigOptions;
 };
-export type ApiConfigOptions = ApiConfigItem | ApiConfigValue;
+export type ApiConfigOptions = ApiConfigItem | ApiConfigValue | string;
 export type ApiConfig = {
   [key: string]: string | ApiConfigOptions;
 };

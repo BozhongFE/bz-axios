@@ -28,6 +28,8 @@ const config: ApiConfig = {
         url:
           'https://huodong.office.bzdev.net/restful/activity/crazy/home.json?story_type=0',
       },
+      key4:
+        'https://huodong.office.bzdev.net/restful/activity/crazy/home.json?story_type=0',
     },
   },
 };
@@ -62,5 +64,5 @@ class Requestor extends Request {
 const api = new BzAxios(config, {}, {});
 api['_defaultError'] = (data: any) => {};
 
-const result = api['api1'].POST();
+const result = api['api2']['key2']['key4'].GET();
 result.then((res: any) => {}).catch((err: any) => {});
