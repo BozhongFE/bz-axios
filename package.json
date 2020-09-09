@@ -1,6 +1,6 @@
 {
-  "name": "bz-axios",
-  "version": "2.0.1",
+  "name": "@bz/axios",
+  "version": "2.1.0",
   "description": "",
   "main": "dist/bz-axios.esm.js",
   "typings": "types/index.d.ts",
