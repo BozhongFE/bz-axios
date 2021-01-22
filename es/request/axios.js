@@ -49,7 +49,7 @@ class AxiosRequest extends Handler {
                 .catch((error) => {
                 const { networkError, requestComplete } = config;
                 reject(error);
-                return this._networkError(networkError, requestComplete);
+                return this._networkError(networkError, requestComplete)(error);
             });
         });
     }
