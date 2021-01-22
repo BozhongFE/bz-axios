@@ -62,7 +62,9 @@ class Requestor extends Request {
 }
 */
 const api = new BzAxios(config, {}, {});
-api['_defaultError'] = (data: any) => {};
+api['_defaultError'] = (data: any) => {
+  console.log('error', data);
+};
 
 const result = api['api2']['key2']['key4'].GET();
 result.then((res: any) => {}).catch((err: any) => {});

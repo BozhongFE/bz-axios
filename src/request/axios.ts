@@ -72,7 +72,6 @@ class AxiosRequest extends Handler {
         .catch((error: any) => {
           const { networkError, requestComplete } = config;
           reject(error);
-
           return this._networkError(networkError, requestComplete)(error);
         });
     });

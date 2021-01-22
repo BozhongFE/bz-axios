@@ -2,7 +2,8 @@ const path = require('path');
 const { terser } = require('rollup-plugin-terser');
 
 const getConfig = require('./config');
-const { name } = require('../package.json');
+const { name: packageName } = require('../package.json');
+const name = packageName.replace('@bz/', 'bz-');
 const resolveFile = function (filePath) {
   return path.join(__dirname, '..', filePath);
 };

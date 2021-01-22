@@ -17,6 +17,8 @@ const config = {
     },
 };
 const api = new BzAxios(config, {}, {});
-api['_defaultError'] = (data) => { };
+api['_defaultError'] = (data) => {
+    console.log('error', data);
+};
 const result = api['api2']['key2']['key4'].GET();
 result.then((res) => { }).catch((err) => { });

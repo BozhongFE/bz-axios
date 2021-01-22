@@ -289,7 +289,7 @@ var AxiosRequest = /*@__PURE__*/(function (Handler) {
                 var networkError = config.networkError;
                 var requestComplete = config.requestComplete;
                 reject(error);
-                return this$1._networkError(networkError, requestComplete);
+                return this$1._networkError(networkError, requestComplete)(error);
             });
         });
     };
