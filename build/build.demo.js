@@ -10,7 +10,42 @@ webpack(
   Object.assign({
     mode: 'development',
     entry: {
-      main: './es/app.js',
+      main: ['babel-polyfill', './es/app.js'],
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['babel-preset-env', 'babel-preset-es2015'],
+              plugins: [
+                'babel-plugin-transform-runtime',
+                'babel-polyfill'
+              ],
+            }
+          }
+        },
+        {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: ['babel-preset-env', 'babel-preset-es2015'],
+                plugins: [
+                  'babel-plugin-transform-runtime',
+                  'babel-polyfill'
+                ],
+              },
+            },
+            'ts-loader'
+          ]
+        },
+      ],
     },
     output: {
       path: path.resolve(__dirname, '../dist/demo'),

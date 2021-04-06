@@ -10,6 +10,41 @@ const buble = require('@rollup/plugin-buble');
 const { name } = require('../package.json');
 
 const baseConfig = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['babel-preset-env', 'babel-preset-es2015'],
+            plugins: [
+              'babel-plugin-transform-runtime',
+              'babel-polyfill'
+            ],
+          }
+        }
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['babel-preset-env', 'babel-preset-es2015'],
+              plugins: [
+                'babel-plugin-transform-runtime',
+                'babel-polyfill'
+              ],
+            },
+          },
+          'ts-loader'
+        ]
+      },
+    ],
+  },
   external: [
     'object-assign',
     'promise-polyfill',

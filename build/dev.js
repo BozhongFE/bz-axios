@@ -1,8 +1,8 @@
-const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const address = require('os').networkInterfaces();
 const version = process.env.npm_package_version;
-
+const {baseConfig} = require('./config');
 // 获取ip
 const getAddressIP = () => {
   let ip = '';
@@ -15,14 +15,41 @@ const getAddressIP = () => {
   }
   return ip;
 };
-
+const host = getAddressIP() || '0.0.0.0';
+const port = 8000;
 module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.js$/,
         exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['babel-preset-env', 'babel-preset-es2015'],
+            plugins: [
+              'babel-plugin-transform-runtime',
+              'babel-polyfill'
+            ],
+          }
+        }
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['babel-preset-env', 'babel-preset-es2015'],
+              plugins: [
+                'babel-plugin-transform-runtime',
+                'babel-polyfill'
+              ],
+            },
+          },
+          'ts-loader'
+        ]
       },
     ],
   },
@@ -33,8 +60,8 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     overlay: true,
-    host: getAddressIP() || '0.0.0.0',
-    port: 8000,
+    host,
+    port,
     disableHostCheck: true,
   },
   plugins: [],
@@ -43,9 +70,14 @@ module.exports = {
 // 开发模式
 if (process.argv.indexOf('development') !== -1) {
   module.exports.entry = {
-    main: './src/app.ts',
+    main: ['babel-polyfill', './src/app.ts'],
   };
   module.exports.plugins = (module.exports.plugins || []).concat([
+    new FriendlyErrorsPlugin({
+      compilationSuccessInfo: {
+        messages: [`You application is running at http://${host}:${port}`],
+        },
+    }),
     new htmlWebpackPlugin({
       filename: 'index.html',
       template: './src/index.html',
